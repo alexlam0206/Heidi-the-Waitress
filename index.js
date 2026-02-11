@@ -104,13 +104,13 @@ async function fetchShopItems() {
     // if there are new items, send slack message pinging everyone
     if (SLACK_CHANNEL_ID && newItems.length > 0) {
       for (const item of newItems) {
-        const message = `<!channel> Heidi found a new item on the menu! 🥨\n\n` +
-          `*Item name*: ${item.name}\n` +
-          `*Description*: ${item.description || 'No description'}\n` +
-          `*Price*: ${item.price || '??'} tickets\n` +
-          `*Stock*: ${item.stock}\n` +
-          `*Buy link*: ${item.buy_link}\n` +
-          (item.photo ? `*Photo*: ${item.photo}` : '');
+        const message = `<!channel> *Ooooh lookie here!* Heidi just spotted something new on the menu! 🥨✨\n\n` +
+          `*${item.name}* 🌟\n` +
+          `> ${item.description || '_No description provided, it\'s a mystery!_'} 🕵️‍♀️\n\n` +
+          `💸 *Price:* ${item.price || '??'} tickets\n` +
+          `📦 *Stock:* ${item.stock} left in the pantry!\n` +
+          `🔗 *Snag it here:* ${item.buy_link}\n` +
+          (item.photo ? `🖼️ *Take a peek:* ${item.photo}` : '');
 
         await app.client.chat.postMessage({
           channel: SLACK_CHANNEL_ID,
