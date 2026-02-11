@@ -114,7 +114,8 @@ async function fetchShopItems() {
 
         await app.client.chat.postMessage({
           channel: SLACK_CHANNEL_ID,
-          text: message
+          text: message,
+          link_names: true
         });
       }
       console.log(`Posted ${newItems.length} new items to Slack.`);
