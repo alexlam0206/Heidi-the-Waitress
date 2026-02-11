@@ -1,0 +1,16 @@
+{
+  "name": "heidi-the-waitress",
+  "version": "1.0.0",
+  "description": "Heidi serves you the dish! Heidi has different jobs, apart from telling you the updates on your project and paying you cookies, she has got a part time job. Ye, watch the menu and tell you if there's any changes on the menu!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@slack/web-api": "^7.14.0",
+    "node-fetch": "^3.3.2"
+  }
+}
