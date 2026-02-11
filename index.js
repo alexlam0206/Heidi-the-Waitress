@@ -1,5 +1,7 @@
 require('dotenv').config();
 const { App } = require('@slack/bolt');
+const fs = require('fs');
+const path = require('path');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 const app = new App({
@@ -12,44 +14,77 @@ const app = new App({
 const FLAVORTOWN_API_URL = process.env.FLAVORTOWN_API_URL || 'https://flavortown.hackclub.com';
 const FETCH_INTERVAL_MS = parseInt(process.env.FETCH_INTERVAL_MS || '300000', 10);
 const FLAVORTOWN_API_KEY = process.env.FLAVORTOWN_API_KEY;
+const SLACK_CHANNEL_URL = process.env.SLACK_CHANNEL_URL;
+const SHOP_PAGE_URL = process.env.SHOP_PAGE_URL || 'https://flavortown.hackclub.com/shop';
+const CACHE_FILE = path.join(__dirname, 'cache.json');
 
-// track items in memory for now
-let previousItems = null;
+function getChannelId(input) {
+  if (!input) return null;
+  const match = input.match(/archives\/([A-Z0-9]+)/i);
+  return match ? match[1] : input;
+}
+
+const SLACK_CHANNEL_ID = getChannelId(SLACK_CHANNEL_URL);
+
+// load cached items from local json file
+function loadCache() {
+  try {
+    if (fs.existsSync(CACHE_FILE)) {
+      const data = fs.readFileSync(CACHE_FILE, 'utf8');
+      return JSON.parse(data);
+    }
+  } catch (err) {
+    console.error('Error loading cache:', err.message);
+  }
+  return null;
+}
+
+// save items to local json file
+function saveCache(items) {
+  try {
+    fs.writeFileSync(CACHE_FILE, JSON.stringify(items, null, 2));
+  } catch (err) {
+    console.error('Error saving cache:', err.message);
+  }
+}
+
+let previousItems = loadCache();
 
 function detectChanges(currentItems) {
-  // compare the fetched items with previously seen items
+  // compare new fetch with cache to detect new items
   if (!previousItems) {
-    previousItems = new Map(currentItems.map(item => [item.id, item]));
+    saveCache(currentItems);
+    previousItems = currentItems;
     return [];
   }
 
   const changes = [];
-  const currentItemsMap = new Map(currentItems.map(item => [item.id, item]));
+  const previousMap = new Map(previousItems.map(item => [item.id, item]));
 
   for (const item of currentItems) {
-    const oldItem = previousItems.get(item.id);
-
-    if (!oldItem) {
-      // parse name, price, stock, description, photo link
+    if (!previousMap.has(item.id)) {
+      // new item found
       changes.push({
-        type: 'new',
         name: item.name,
         description: item.description,
         price: item.ticket_cost?.base_cost,
         stock: item.stock,
         photo: item.image_url,
-        buy_link: `https://flavortown.hackclub.com/shop` // general shop link
+        buy_link: SHOP_PAGE_URL
       });
     }
   }
 
-  previousItems = currentItemsMap;
+  if (changes.length > 0) {
+    saveCache(currentItems);
+    previousItems = currentItems;
+  }
+  
   return changes;
 }
 
 async function fetchShopItems() {
   try {
-    // fetch json data from the shop api
     const storeEndpoint = `${FLAVORTOWN_API_URL.replace(/\/$/, '')}/api/v1/store`;
     console.log(`Fetching shop items from ${storeEndpoint}...`);
     
@@ -64,7 +99,27 @@ async function fetchShopItems() {
     const data = await response.json();
     console.log('Successfully fetched shop items.');
     
-    const changes = detectChanges(data);
+    const newItems = detectChanges(data);
+
+    // if there are new items, send slack message pinging everyone
+    if (SLACK_CHANNEL_ID && newItems.length > 0) {
+      for (const item of newItems) {
+        const message = `<!channel> Heidi found a new item on the menu! 🥨\n\n` +
+          `*Item name*: ${item.name}\n` +
+          `*Description*: ${item.description || 'No description'}\n` +
+          `*Price*: ${item.price || '??'} tickets\n` +
+          `*Stock*: ${item.stock}\n` +
+          `*Buy link*: ${item.buy_link}\n` +
+          (item.photo ? `*Photo*: ${item.photo}` : '');
+
+        await app.client.chat.postMessage({
+          channel: SLACK_CHANNEL_ID,
+          text: message
+        });
+      }
+      console.log(`Posted ${newItems.length} new items to Slack.`);
+    }
+
     return data;
   } catch (error) {
     console.error('Error fetching shop items:', error.message);
