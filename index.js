@@ -104,17 +104,49 @@ async function fetchShopItems() {
     // if there are new items, send slack message pinging everyone
     if (SLACK_CHANNEL_ID && newItems.length > 0) {
       for (const item of newItems) {
-        const message = `<!channel> *Ooooh hey guysss!* Heidi just spotted something new on the menu! :ultrafastparrot: \n\n` +
-          `*${item.name}*\n` +
-          `> ${item.description || '_No description provided, it\'s a mystery!_ :hmmge: '} \n\n` +
-          `*Price:* ${item.price || '??'} tickets\n` +
-          `*Stock:* ${item.stock} left in the pantry!\n` +
-          `*Buy:* ${item.buy_link}\n` +
-          (item.photo ? `${item.photo}\n` : '');
+        const blocks = [
+          {
+            type: "section",
+            text: {
+              type: "mrkdwn",
+              text: `<!channel> *Ooooh lookie here!* Heidi just spotted something new on the menu! 🥨✨\n\n*${item.name}* 🌟\n> ${item.description || '_No description provided, it\'s a mystery!_'} 🕵️‍♀️`
+            }
+          },
+          {
+            type: "section",
+            fields: [
+              {
+                type: "mrkdwn",
+                text: `💸 *Price:* ${item.price || '??'} tickets`
+              },
+              {
+                type: "mrkdwn",
+                text: `📦 *Stock:* ${item.stock} left!`
+              }
+            ]
+          }
+        ];
+
+        if (item.photo) {
+          blocks.push({
+            type: "image",
+            image_url: item.photo,
+            alt_text: item.name
+          });
+        }
+
+        blocks.push({
+          type: "section",
+          text: {
+            type: "mrkdwn",
+            text: `🔗 *Snag it here:* <${item.buy_link}|Flavortown Shop>`
+          }
+        });
 
         await app.client.chat.postMessage({
           channel: SLACK_CHANNEL_ID,
-          text: message,
+          text: `Heidi found a new item: ${item.name}!`,
+          blocks: blocks,
           link_names: true
         });
       }
