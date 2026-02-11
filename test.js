@@ -22,7 +22,7 @@ const channelId = getChannelId(process.env.SLACK_CHANNEL_URL);
     console.log(`Sending test message to ${channelId}...`);
     const result = await client.chat.postMessage({
       channel: channelId,
-      text: "Test Hello World from Heidi! 🥨 (This message will self-destruct in 10 seconds...)"
+      text: "<!channel> Test Hello World from Heidi! :ultrafastparrot: :flavortown: (This message will self-destruct in 10 seconds...)"
     });
 
     console.log('Message sent! Waiting 10 seconds to delete...');
