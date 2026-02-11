@@ -4,13 +4,17 @@
   "description": "Heidi serves you the dish! Heidi has different jobs, apart from telling you the updates on your project and paying you cookies, she has got a part time job. Ye, watch the menu and tell you if there's any changes on the menu!",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@slack/bolt": "^4.6.0",
     "@slack/web-api": "^7.14.0",
+    "dotenv": "^17.2.4",
     "node-fetch": "^3.3.2"
   }
 }
