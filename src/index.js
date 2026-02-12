@@ -156,7 +156,7 @@ async function fetchShopItems() {
               type: "section",
               text: {
                 type: "mrkdwn",
-                text: `<!channel> *Ooooh lookie here!* Heidi just spotted something new on the menu! :ultrafastparrot: :flavortown:\n\n*${change.name}* 🌟\n> ${change.description || '_No description provided, it\'s a mystery!_'}`
+                text: `<!channel> *Ooooh lookie here!* Heidi just spotted something new on the menu! :ultrafastparrot: :flavortown: :yay: \n\n*${change.name}* \n> ${change.description || '_No description provided, it\'s a mystery!_'}`
               }
             },
             {
@@ -189,7 +189,7 @@ async function fetchShopItems() {
               type: "section",
               text: {
                 type: "mrkdwn",
-                text: `<!channel> *Heads up!* Heidi noticed some changes for *${change.name}*! 🧐\n\n${updateDetails}`
+                text: `<!channel> *Heads up!* Heidi noticed some changes for *${change.name}*! :huh: \n\n${updateDetails}`
               }
             }
           ];
@@ -207,7 +207,7 @@ async function fetchShopItems() {
           type: "section",
           text: {
             type: "mrkdwn",
-            text: `🔗 *Check it out here:* <${change.buy_link}|Flavortown Shop>`
+            text: `*<${change.buy_link}|Buy now!>*`
           }
         });
 
