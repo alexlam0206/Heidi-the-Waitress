@@ -31,7 +31,7 @@ function formatPrices(prices) {
   const uniquePrices = new Set(regions.map(([_, price]) => price));
 
   if (uniquePrices.size === 1) {
-    return `${uniquePrices.values().next().value} :ftt-cookie:`;
+    return `${uniquePrices.values().next().value} :ft-cookie:`;
   }
 
   const countryEmojis = {
@@ -45,7 +45,7 @@ function formatPrices(prices) {
   };
   
   return regions
-    .map(([country, price]) => `${countryEmojis[country] || country.toUpperCase()}: ${price} :ftt-cookie:`)
+    .map(([country, price]) => `${countryEmojis[country] || country.toUpperCase()}: ${price} :ft-cookie:`)
     .join('\n');
 }
 
