@@ -26,13 +26,27 @@ const SLACK_CHANNEL_ID = getChannelId(SLACK_CHANNEL_URL);
 
 function formatPrices(prices) {
   if (!prices) return 'Unknown';
+  
+  const regions = Object.entries(prices).filter(([key]) => key !== 'base_cost');
+  const uniquePrices = new Set(regions.map(([_, price]) => price));
+
+  if (uniquePrices.size === 1) {
+    return `${uniquePrices.values().next().value} :ftt-cookie:`;
+  }
+
   const countryEmojis = {
-    us: '🇺🇸', ca: '🇨🇦', eu: '🇪🇺', in: '🇮🇳', uk: '🇬🇧', au: '🇦🇺', xx: '🌐'
+    au: ':flag-au:',
+    ca: ':flag-ca:',
+    eu: ':flag-eu:',
+    in: ':flag-in:',
+    uk: ':flag-gb:',
+    us: ':flag-us:',
+    xx: ':earth_americas:'
   };
-  return Object.entries(prices)
-    .filter(([key]) => key !== 'base_cost')
+  
+  return regions
     .map(([country, price]) => `${countryEmojis[country] || country.toUpperCase()}: ${price} :ftt-cookie:`)
-    .join(' | ');
+    .join('\n');
 }
 
 async function testOutput() {
@@ -60,7 +74,7 @@ async function testOutput() {
       console.log(`Block 1: <!channel> *Ooooh lookie here!* Heidi just spotted something new on the menu! 🥨✨`);
       console.log(`         *${item.name}* 🌟`);
       console.log(`         > ${item.description || '_No description provided, it\'s a mystery!_'} 🕵️‍♀️`);
-      console.log(`Block 2: 💸 *Prices:* ${formatPrices(item.ticket_cost)}`);
+      console.log(`Block 2: 💸 *Prices:*\n${formatPrices(item.ticket_cost)}`);
       console.log(`Block 3: 📦 *Stock:* ${item.stock ?? 'Unknown'} left!`);
       if (item.image_url) console.log(`Block 4: [Image] ${item.image_url}`);
       console.log(`Block 5: 🔗 *Check it out here:* <${buyLink}|Flavortown Shop>`);
@@ -70,8 +84,8 @@ async function testOutput() {
       console.log(`Text: Heidi noticed a change for ${item.name}!`);
       console.log(`Block 1: <!channel> *Heads up!* Heidi noticed some changes for *${item.name}*! 🧐`);
       console.log(`         💸 *Prices changed:*`);
-      console.log(`         *Before:* ${formatPrices(item.ticket_cost)}`);
-      console.log(`         *Now:* ${formatPrices(item.ticket_cost)}`);
+      console.log(`         *Before:* \n${formatPrices(item.ticket_cost)}`);
+      console.log(`         *Now:* \n${formatPrices(item.ticket_cost)}`);
       console.log(`         📦 *Stock changed:* ${item.stock ?? 'Unknown'} -> ${item.stock ?? 'Unknown'} left!`);
       console.log('--------------------------------------\n');
     }

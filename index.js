@@ -103,20 +103,27 @@ function detectChanges(currentItems) {
 
 function formatPrices(prices) {
   if (!prices) return 'Unknown';
+  
+  const regions = Object.entries(prices).filter(([key]) => key !== 'base_cost');
+  const uniquePrices = new Set(regions.map(([_, price]) => price));
+
+  if (uniquePrices.size === 1) {
+    return `${uniquePrices.values().next().value} :ftt-cookie:`;
+  }
+
   const countryEmojis = {
-    us: '🇺🇸',
-    ca: '🇨🇦',
-    eu: '🇪🇺',
-    in: '🇮🇳',
-    uk: '🇬🇧',
-    au: '🇦🇺',
-    xx: '🌐'
+    au: ':flag-au:',
+    ca: ':flag-ca:',
+    eu: ':flag-eu:',
+    in: ':flag-in:',
+    uk: ':flag-gb:',
+    us: ':flag-us:',
+    xx: ':earth_americas:'
   };
   
-  return Object.entries(prices)
-    .filter(([key]) => key !== 'base_cost')
+  return regions
     .map(([country, price]) => `${countryEmojis[country] || country.toUpperCase()}: ${price} :ftt-cookie:`)
-    .join(' | ');
+    .join('\n');
 }
 
 async function fetchShopItems() {
@@ -149,21 +156,21 @@ async function fetchShopItems() {
               type: "section",
               text: {
                 type: "mrkdwn",
-                text: `<!channel> *Ooooh lookie here!* Heidi just spotted something new on the menu! :ultrafastparrot: :flavortown:\n\n*${change.name}* 🌟\n> ${change.description || '_No description provided, it\'s a mystery!_'} 🕵️‍♀️`
+                text: `<!channel> *Ooooh lookie here!* Heidi just spotted something new on the menu! :ultrafastparrot: :flavortown:\n\n*${change.name}* 🌟\n> ${change.description || '_No description provided, it\'s a mystery!_'}`
               }
             },
             {
               type: "section",
               text: {
                 type: "mrkdwn",
-                text: `💸 *Prices:*\n${formatPrices(change.prices)}`
+                text: `*Prices:*\n${formatPrices(change.prices)}`
               }
             },
             {
               type: "section",
               text: {
                 type: "mrkdwn",
-                text: `📦 *Stock:* ${change.stock ?? 'Unknown'} left!`
+                text: `*Stock:* ${change.stock ?? 'Unknown'} left!`
               }
             }
           ];
@@ -171,10 +178,10 @@ async function fetchShopItems() {
           messageText = `Heidi noticed a change for ${change.name}!`;
           let updateDetails = '';
           if (change.priceChanged) {
-            updateDetails += `💸 *Prices changed:*\n*Before:* ${formatPrices(change.oldPrices)}\n*Now:* ${formatPrices(change.newPrices)}\n`;
+            updateDetails += `*Prices changed:*\n*Before:*\n${formatPrices(change.oldPrices)}\n*Now:*\n${formatPrices(change.newPrices)}\n`;
           }
           if (change.stockChanged) {
-            updateDetails += `📦 *Stock changed:* ${change.oldStock ?? 'Unknown'} -> ${change.newStock ?? 'Unknown'} left!\n`;
+            updateDetails += `*Stock changed:* ${change.oldStock ?? 'Unknown'} -> ${change.newStock ?? 'Unknown'} left!\n`;
           }
 
           blocks = [
