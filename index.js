@@ -26,7 +26,6 @@ function getChannelId(input) {
 
 const SLACK_CHANNEL_ID = getChannelId(SLACK_CHANNEL_URL);
 
-// load cached items from local json file
 function loadCache() {
   try {
     if (fs.existsSync(CACHE_FILE)) {
@@ -39,7 +38,6 @@ function loadCache() {
   return null;
 }
 
-// save items to local json file
 function saveCache(items) {
   try {
     fs.writeFileSync(CACHE_FILE, JSON.stringify(items, null, 2));
@@ -51,7 +49,6 @@ function saveCache(items) {
 let previousItems = loadCache();
 
 function detectChanges(currentItems) {
-  // compare new fetch with cache to detect new items
   if (!previousItems) {
     saveCache(currentItems);
     previousItems = currentItems;
@@ -62,16 +59,37 @@ function detectChanges(currentItems) {
   const previousMap = new Map(previousItems.map(item => [item.id, item]));
 
   for (const item of currentItems) {
-    if (!previousMap.has(item.id)) {
-      // new item found
+    const prevItem = previousMap.get(item.id);
+    
+    if (!prevItem) {
       changes.push({
+        type: 'new',
         name: item.name,
         description: item.description,
-        price: item.ticket_cost?.base_cost,
+        prices: item.ticket_cost,
         stock: item.stock,
         photo: item.image_url,
-        buy_link: SHOP_PAGE_URL
+        buy_link: `${SHOP_PAGE_URL.replace(/\/$/, '')}/order?shop_item_id=${item.id}`
       });
+    } else {
+      const priceChanged = JSON.stringify(prevItem.ticket_cost) !== JSON.stringify(item.ticket_cost);
+      const stockChanged = prevItem.stock !== item.stock;
+
+      if (priceChanged || stockChanged) {
+        changes.push({
+          type: 'update',
+          name: item.name,
+          description: item.description,
+          oldPrices: prevItem.ticket_cost,
+          newPrices: item.ticket_cost,
+          oldStock: prevItem.stock,
+          newStock: item.stock,
+          priceChanged,
+          stockChanged,
+          photo: item.image_url,
+          buy_link: `${SHOP_PAGE_URL.replace(/\/$/, '')}/order?shop_item_id=${item.id}`
+        });
+      }
     }
   }
 
@@ -81,6 +99,24 @@ function detectChanges(currentItems) {
   }
   
   return changes;
+}
+
+function formatPrices(prices) {
+  if (!prices) return 'Unknown';
+  const countryEmojis = {
+    us: '🇺🇸',
+    ca: '🇨🇦',
+    eu: '🇪🇺',
+    in: '🇮🇳',
+    uk: '🇬🇧',
+    au: '🇦🇺',
+    xx: '🌐'
+  };
+  
+  return Object.entries(prices)
+    .filter(([key]) => key !== 'base_cost')
+    .map(([country, price]) => `${countryEmojis[country] || country.toUpperCase()}: ${price} :ftt-cookie:`)
+    .join(' | ');
 }
 
 async function fetchShopItems() {
@@ -99,39 +135,64 @@ async function fetchShopItems() {
     const data = await response.json();
     console.log('Successfully fetched shop items.');
     
-    const newItems = detectChanges(data);
+    const changes = detectChanges(data);
 
-    // if there are new items, send slack message pinging everyone
-    if (SLACK_CHANNEL_ID && newItems.length > 0) {
-      for (const item of newItems) {
-        const blocks = [
-          {
-            type: "section",
-            text: {
-              type: "mrkdwn",
-              text: `<!channel> *Ooooh lookie here!* Heidi just spotted something new on the menu! 🥨✨\n\n*${item.name}* 🌟\n> ${item.description || '_No description provided, it\'s a mystery!_'} 🕵️‍♀️`
-            }
-          },
-          {
-            type: "section",
-            fields: [
-              {
+    if (SLACK_CHANNEL_ID && changes.length > 0) {
+      for (const change of changes) {
+        let messageText = '';
+        let blocks = [];
+
+        if (change.type === 'new') {
+          messageText = `Heidi found a new item: ${change.name}!`;
+          blocks = [
+            {
+              type: "section",
+              text: {
                 type: "mrkdwn",
-                text: `💸 *Price:* ${item.price || '??'} tickets`
-              },
-              {
-                type: "mrkdwn",
-                text: `📦 *Stock:* ${item.stock} left!`
+                text: `<!channel> *Ooooh lookie here!* Heidi just spotted something new on the menu! :ultrafastparrot: :flavortown:\n\n*${change.name}* 🌟\n> ${change.description || '_No description provided, it\'s a mystery!_'} 🕵️‍♀️`
               }
-            ]
+            },
+            {
+              type: "section",
+              text: {
+                type: "mrkdwn",
+                text: `💸 *Prices:*\n${formatPrices(change.prices)}`
+              }
+            },
+            {
+              type: "section",
+              text: {
+                type: "mrkdwn",
+                text: `📦 *Stock:* ${change.stock ?? 'Unknown'} left!`
+              }
+            }
+          ];
+        } else if (change.type === 'update') {
+          messageText = `Heidi noticed a change for ${change.name}!`;
+          let updateDetails = '';
+          if (change.priceChanged) {
+            updateDetails += `💸 *Prices changed:*\n*Before:* ${formatPrices(change.oldPrices)}\n*Now:* ${formatPrices(change.newPrices)}\n`;
           }
-        ];
+          if (change.stockChanged) {
+            updateDetails += `📦 *Stock changed:* ${change.oldStock ?? 'Unknown'} -> ${change.newStock ?? 'Unknown'} left!\n`;
+          }
 
-        if (item.photo) {
+          blocks = [
+            {
+              type: "section",
+              text: {
+                type: "mrkdwn",
+                text: `<!channel> *Heads up!* Heidi noticed some changes for *${change.name}*! 🧐\n\n${updateDetails}`
+              }
+            }
+          ];
+        }
+
+        if (change.photo) {
           blocks.push({
             type: "image",
-            image_url: item.photo,
-            alt_text: item.name
+            image_url: change.photo,
+            alt_text: change.name
           });
         }
 
@@ -139,18 +200,18 @@ async function fetchShopItems() {
           type: "section",
           text: {
             type: "mrkdwn",
-            text: `🔗 *Snag it here:* <${item.buy_link}|Flavortown Shop>`
+            text: `🔗 *Check it out here:* <${change.buy_link}|Flavortown Shop>`
           }
         });
 
         await app.client.chat.postMessage({
           channel: SLACK_CHANNEL_ID,
-          text: `Heidi found a new item: ${item.name}!`,
+          text: messageText,
           blocks: blocks,
           link_names: true
         });
       }
-      console.log(`Posted ${newItems.length} new items to Slack.`);
+      console.log(`Posted ${changes.length} updates to Slack.`);
     }
 
     return data;

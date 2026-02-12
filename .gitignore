@@ -1,1 +1,7 @@
 /node_modules
+.DS_Store
+
+#for test
+/flavortown
+cache.json
+.env
