@@ -34,7 +34,7 @@ const channelId = getChannelId(process.env.SLACK_CHANNEL_URL);
           channel: channelId,
           ts: result.ts
         });
-        console.log('Test message deleted successfully! ✨');
+        console.log('Test message deleted successfully!');
         process.exit(0);
       } catch (error) {
         console.error('Error deleting message:', error.message);

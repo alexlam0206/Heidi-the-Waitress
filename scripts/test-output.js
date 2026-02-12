@@ -71,7 +71,7 @@ async function testOutput() {
       
       console.log('--- PREVIEW: New Item Notification ---');
       console.log(`Text: Heidi found a new item: ${item.name}!`);
-      console.log(`Block 1: <!channel> *Ooooh lookie here!* Heidi just spotted something new on the menu! 🥨✨`);
+      console.log(`Block 1: <!channel> *Ooooh lookie here!* Heidi just spotted something new on the menu!`);
       console.log(`         *${item.name}* 🌟`);
       console.log(`         > ${item.description || '_No description provided, it\'s a mystery!_'} 🕵️‍♀️`);
       console.log(`Block 2: 💸 *Prices:*\n${formatPrices(item.ticket_cost)}`);
@@ -90,7 +90,7 @@ async function testOutput() {
       console.log('--------------------------------------\n');
     }
 
-    console.log('Heidi is ready to serve! 🥨✨');
+    console.log('Heidi is ready to serve!');
     process.exit(0);
   } catch (error) {
     console.error('❌ Error during test-output:', error.message);

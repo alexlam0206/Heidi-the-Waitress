@@ -16,7 +16,7 @@ const FETCH_INTERVAL_MS = parseInt(process.env.FETCH_INTERVAL_MS || '300000', 10
 const FLAVORTOWN_API_KEY = process.env.FLAVORTOWN_API_KEY;
 const SLACK_CHANNEL_URL = process.env.SLACK_CHANNEL_URL;
 const SHOP_PAGE_URL = process.env.SHOP_PAGE_URL || 'https://flavortown.hackclub.com/shop';
-const CACHE_FILE = path.join(__dirname, 'cache.json');
+const CACHE_FILE = path.join(__dirname, '..', 'cache.json');
 
 function getChannelId(input) {
   if (!input) return null;
