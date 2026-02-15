@@ -75,7 +75,7 @@ async function testOutput() {
       console.log(`         *${item.name}* 🌟`);
       console.log(`         > ${item.description || '_No description provided, it\'s a mystery!_'} 🕵️‍♀️`);
       console.log(`Block 2: 💸 *Prices:*\n${formatPrices(item.ticket_cost)}`);
-      console.log(`Block 3: 📦 *Stock:* ${item.stock ?? 'Unknown'} left!`);
+      console.log(`Block 3: 📦 *Stock:* ${item.stock ?? 'Unlimited'} left!`);
       if (item.image_url) console.log(`Block 4: [Image] ${item.image_url}`);
       console.log(`Block 5: 🔗 *Check it out here:* <${buyLink}|Flavortown Shop>`);
       console.log('--------------------------------------\n');
@@ -86,7 +86,7 @@ async function testOutput() {
       console.log(`         💸 *Prices changed:*`);
       console.log(`         *Before:* \n${formatPrices(item.ticket_cost)}`);
       console.log(`         *Now:* \n${formatPrices(item.ticket_cost)}`);
-      console.log(`         📦 *Stock changed:* ${item.stock ?? 'Unknown'} -> ${item.stock ?? 'Unknown'} left!`);
+      console.log(`         📦 *Stock changed:* ${item.stock ?? 'Unlimited'} -> ${item.stock ?? 'Unlimited'} left!`);
       console.log('--------------------------------------\n');
     }
 

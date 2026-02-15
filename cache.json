@@ -2626,46 +2626,6 @@
     }
   },
   {
-    "id": 80,
-    "name": "2TB SSD",
-    "description": "2TB of storage. so solid!",
-    "old_prices": [],
-    "limited": true,
-    "stock": 3,
-    "type": "ShopItem::HQMailItem",
-    "show_in_carousel": true,
-    "accessory_tag": "",
-    "agh_contents": "",
-    "attached_shop_item_ids": [
-      null
-    ],
-    "buyable_by_self": true,
-    "long_description": "It could be either a Samsung EVO 870 or a WD Green SSD!\r\n\r\nSecondhand, but tested and in great condition.\r\n\r\nSATA cable required.",
-    "max_qty": null,
-    "one_per_person_ever": false,
-    "sale_percentage": null,
-    "image_url": "https://flavortown.hackclub.com/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6OTI3MzgsInB1ciI6ImJsb2JfaWQifX0=--150e7f25d11f12f5e4da0b41eaf7a234600526e7/samsung.jpg",
-    "enabled": {
-      "enabled_au": true,
-      "enabled_ca": true,
-      "enabled_eu": true,
-      "enabled_in": true,
-      "enabled_uk": true,
-      "enabled_us": true,
-      "enabled_xx": true
-    },
-    "ticket_cost": {
-      "base_cost": 600,
-      "au": 600,
-      "ca": 600,
-      "eu": 600,
-      "in": 600,
-      "uk": 600,
-      "us": 600,
-      "xx": 600
-    }
-  },
-  {
     "id": 79,
     "name": "Campfire Flagship T-Shirt",
     "description": "now you can wear a beautiful campfire! so swag!",
@@ -2703,6 +2663,46 @@
       "uk": 165,
       "us": 165,
       "xx": 165
+    }
+  },
+  {
+    "id": 80,
+    "name": "2TB SSD",
+    "description": "2TB of storage. so solid!",
+    "old_prices": [],
+    "limited": true,
+    "stock": 3,
+    "type": "ShopItem::HQMailItem",
+    "show_in_carousel": true,
+    "accessory_tag": "",
+    "agh_contents": "",
+    "attached_shop_item_ids": [
+      null
+    ],
+    "buyable_by_self": true,
+    "long_description": "It could be either a Samsung EVO 870 or a WD Green SSD!\r\n\r\nSecondhand, but tested and in great condition.\r\n\r\nSATA cable required.",
+    "max_qty": null,
+    "one_per_person_ever": false,
+    "sale_percentage": null,
+    "image_url": "https://flavortown.hackclub.com/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6MTE2OTQ4LCJwdXIiOiJibG9iX2lkIn19--e1d693d4125b31e0f2838def368ff925b38f988c/ssd_alpha.png",
+    "enabled": {
+      "enabled_au": true,
+      "enabled_ca": true,
+      "enabled_eu": true,
+      "enabled_in": true,
+      "enabled_uk": true,
+      "enabled_us": true,
+      "enabled_xx": true
+    },
+    "ticket_cost": {
+      "base_cost": 600,
+      "au": 600,
+      "ca": 600,
+      "eu": 600,
+      "in": 600,
+      "uk": 600,
+      "us": 600,
+      "xx": 600
     }
   },
   {
@@ -3717,6 +3717,90 @@
       "uk": 800,
       "us": 800,
       "xx": 800
+    }
+  },
+  {
+    "id": 95,
+    "name": "Web(ring) sticker pack",
+    "description": "This is a pre-print sticker design that will change! This sticker pack will contain 2-3 stickers related to webrings / websites. Unlocked by submitting a WebOS project.",
+    "old_prices": [
+      10
+    ],
+    "limited": false,
+    "stock": null,
+    "type": "ShopItem::LetterMail",
+    "show_in_carousel": false,
+    "accessory_tag": "",
+    "agh_contents": "",
+    "attached_shop_item_ids": [
+      null
+    ],
+    "buyable_by_self": true,
+    "long_description": "",
+    "max_qty": null,
+    "one_per_person_ever": false,
+    "sale_percentage": null,
+    "image_url": "https://flavortown.hackclub.com/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6MTE4NzEwLCJwdXIiOiJibG9iX2lkIn19--7d6435290db66be07afddd0a717f4a134ccfdfc5/image.png",
+    "enabled": {
+      "enabled_au": true,
+      "enabled_ca": true,
+      "enabled_eu": true,
+      "enabled_in": true,
+      "enabled_uk": true,
+      "enabled_us": true,
+      "enabled_xx": true
+    },
+    "ticket_cost": {
+      "base_cost": 25,
+      "au": 25,
+      "ca": 25,
+      "eu": 25,
+      "in": 25,
+      "uk": 25,
+      "us": 25,
+      "xx": 25
+    }
+  },
+  {
+    "id": 96,
+    "name": "Neocities Credits",
+    "description": "Enough credit for 2 months of a Neocities supporter account!",
+    "old_prices": [
+      300
+    ],
+    "limited": false,
+    "stock": null,
+    "type": "ShopItem::HCBGrant",
+    "show_in_carousel": false,
+    "accessory_tag": "",
+    "agh_contents": "",
+    "attached_shop_item_ids": [
+      null
+    ],
+    "buyable_by_self": true,
+    "long_description": "Can be used for a Neocities Supporter account: https://neocities.org/supporter",
+    "max_qty": null,
+    "one_per_person_ever": false,
+    "sale_percentage": null,
+    "image_url": "https://flavortown.hackclub.com/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6MTE4NzI2LCJwdXIiOiJibG9iX2lkIn19--8315306c3a5bfad654bf094f1f64a35a14968407/neocities_10_dollars.png",
+    "enabled": {
+      "enabled_au": true,
+      "enabled_ca": true,
+      "enabled_eu": true,
+      "enabled_in": true,
+      "enabled_uk": true,
+      "enabled_us": true,
+      "enabled_xx": true
+    },
+    "ticket_cost": {
+      "base_cost": 50,
+      "au": 50,
+      "ca": 50,
+      "eu": 50,
+      "in": 50,
+      "uk": 50,
+      "us": 50,
+      "xx": 50
     }
   }
 ]

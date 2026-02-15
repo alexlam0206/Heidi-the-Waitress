@@ -29,7 +29,8 @@ const SLACK_CHANNEL_ID = getChannelId(SLACK_CHANNEL_URL);
 function loadCache() {
   try {
     if (fs.existsSync(CACHE_FILE)) {
-      const data = fs.readFileSync(CACHE_FILE, 'utf8');
+      const data = fs.readFileSync(CACHE_FILE, 'utf8').trim();
+      if (!data) return null;
       return JSON.parse(data);
     }
   } catch (err) {
@@ -40,7 +41,9 @@ function loadCache() {
 
 function saveCache(items) {
   try {
+    console.log(`Saving ${items.length} items to cache...`);
     fs.writeFileSync(CACHE_FILE, JSON.stringify(items, null, 2));
+    console.log('Cache saved successfully.');
   } catch (err) {
     console.error('Error saving cache:', err.message);
   }
@@ -50,6 +53,7 @@ let previousItems = loadCache();
 
 function detectChanges(currentItems) {
   if (!previousItems) {
+    console.log('No previous cache found, initializing...');
     saveCache(currentItems);
     previousItems = currentItems;
     return [];
@@ -93,9 +97,27 @@ function detectChanges(currentItems) {
     }
   }
 
-  if (changes.length > 0) {
+  const hasActualChanges = JSON.stringify(previousItems) !== JSON.stringify(currentItems);
+
+  if (hasActualChanges) {
+    console.log(`Changes detected (Total changes: ${changes.length}). Updating cache...`);
+    
+    // Log price/stock changes for debugging
+    for (const change of changes) {
+      if (change.type === 'update') {
+        if (change.priceChanged) {
+          console.log(`[SYNC] Price changed for ${change.name}: ${JSON.stringify(change.oldPrices)} -> ${JSON.stringify(change.newPrices)}`);
+        }
+        if (change.stockChanged) {
+          console.log(`[SYNC] Stock changed for ${change.name}: ${change.oldStock} -> ${change.newStock}`);
+        }
+      }
+    }
+    
     saveCache(currentItems);
     previousItems = currentItems;
+  } else {
+    console.log('No changes detected since last fetch.');
   }
   
   return changes;
@@ -128,10 +150,13 @@ function formatPrices(prices) {
 
 async function fetchShopItems() {
   try {
-    const storeEndpoint = `${FLAVORTOWN_API_URL.replace(/\/$/, '')}/api/v1/store`;
+    const storeEndpoint = `${FLAVORTOWN_API_URL.replace(/\/$/, '')}/api/v1/store?t=${Date.now()}`;
     console.log(`Fetching shop items from ${storeEndpoint}...`);
     
-    const headers = {};
+    const headers = {
+      'Cache-Control': 'no-cache',
+      'Pragma': 'no-cache'
+    };
     if (FLAVORTOWN_API_KEY) {
       headers['Authorization'] = `Bearer ${FLAVORTOWN_API_KEY}`;
     }
@@ -141,6 +166,13 @@ async function fetchShopItems() {
     
     const data = await response.json();
     console.log('Successfully fetched shop items.');
+    
+    // Debug specific item stock
+    const ssd = data.find(item => item.name === '2TB SSD');
+    if (ssd) {
+      console.log(`[DEBUG] 2TB SSD Full Object Keys: ${Object.keys(ssd).join(', ')}`);
+      console.log(`[DEBUG] 2TB SSD Stock value: ${ssd.stock}`);
+    }
     
     const changes = detectChanges(data);
 
@@ -170,7 +202,7 @@ async function fetchShopItems() {
               type: "section",
               text: {
                 type: "mrkdwn",
-                text: `*Stock:* ${change.stock ?? 'Unknown'} left!`
+                text: `*Stock:* ${change.stock ?? 'Unlimited'} left!`
               }
             }
           ];
@@ -181,7 +213,7 @@ async function fetchShopItems() {
             updateDetails += `*Prices changed:*\n*Before:*\n${formatPrices(change.oldPrices)}\n*Now:*\n${formatPrices(change.newPrices)}\n`;
           }
           if (change.stockChanged) {
-            updateDetails += `*Stock changed:* ${change.oldStock ?? 'Unknown'} -> ${change.newStock ?? 'Unknown'} left!\n`;
+            updateDetails += `*Stock changed:* ${change.oldStock ?? 'Unlimited'} -> ${change.newStock ?? 'Unlimited'} left!\n`;
           }
 
           blocks = [
