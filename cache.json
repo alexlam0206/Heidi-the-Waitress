@@ -163,46 +163,6 @@
     }
   },
   {
-    "id": 2,
-    "name": "Raspberry Pi 5",
-    "description": "mm,,, great for hosting all your yummy apps!",
-    "old_prices": [],
-    "limited": false,
-    "stock": null,
-    "type": "ShopItem::ThirdPartyPhysical",
-    "show_in_carousel": true,
-    "accessory_tag": "",
-    "agh_contents": "",
-    "attached_shop_item_ids": [
-      null
-    ],
-    "buyable_by_self": true,
-    "long_description": "",
-    "max_qty": null,
-    "one_per_person_ever": false,
-    "sale_percentage": null,
-    "image_url": "https://flavortown.hackclub.com/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6MjEwLCJwdXIiOiJibG9iX2lkIn19--bb4ab60784a2590933a9f7f273851b7c63f2b731/raspberry-pi-5-raspberry-pi-40958498898115_1000x%20Background%20Removed.png",
-    "enabled": {
-      "enabled_au": true,
-      "enabled_ca": true,
-      "enabled_eu": true,
-      "enabled_in": true,
-      "enabled_uk": true,
-      "enabled_us": true,
-      "enabled_xx": true
-    },
-    "ticket_cost": {
-      "base_cost": 405,
-      "au": 405,
-      "ca": 405,
-      "eu": 405,
-      "in": 405,
-      "uk": 405,
-      "us": 430,
-      "xx": 455
-    }
-  },
-  {
     "id": 18,
     "name": "AMS Lite",
     "description": "Easy multi-coloured 3D printing for Bambu Labs A1 printers!",
@@ -280,6 +240,46 @@
       "uk": 10,
       "us": 10,
       "xx": 10
+    }
+  },
+  {
+    "id": 2,
+    "name": "Raspberry Pi 5",
+    "description": "mm,,, great for hosting all your yummy apps!",
+    "old_prices": [],
+    "limited": false,
+    "stock": null,
+    "type": "ShopItem::ThirdPartyPhysical",
+    "show_in_carousel": true,
+    "accessory_tag": "",
+    "agh_contents": "",
+    "attached_shop_item_ids": [
+      null
+    ],
+    "buyable_by_self": true,
+    "long_description": "4GB model!\r\n\r\n_Please note that all Indian orders will be backordered and are not expected to ship out until March due to a shortage of Pis_",
+    "max_qty": null,
+    "one_per_person_ever": false,
+    "sale_percentage": null,
+    "image_url": "https://flavortown.hackclub.com/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6MjEwLCJwdXIiOiJibG9iX2lkIn19--bb4ab60784a2590933a9f7f273851b7c63f2b731/raspberry-pi-5-raspberry-pi-40958498898115_1000x%20Background%20Removed.png",
+    "enabled": {
+      "enabled_au": true,
+      "enabled_ca": true,
+      "enabled_eu": true,
+      "enabled_in": true,
+      "enabled_uk": true,
+      "enabled_us": true,
+      "enabled_xx": true
+    },
+    "ticket_cost": {
+      "base_cost": 405,
+      "au": 405,
+      "ca": 405,
+      "eu": 405,
+      "in": 405,
+      "uk": 405,
+      "us": 430,
+      "xx": 455
     }
   },
   {

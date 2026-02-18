@@ -49,6 +49,12 @@ function formatPrices(prices) {
     .join('\n');
 }
 
+function truncate(text, max = 500) {
+  if (!text) return '_None_';
+  const str = String(text);
+  return str.length > max ? `${str.slice(0, max)}…` : str;
+}
+
 async function testOutput() {
   try {
     const storeEndpoint = `${FLAVORTOWN_API_URL.replace(/\/$/, '')}/api/v1/store`;
@@ -66,30 +72,42 @@ async function testOutput() {
     console.log(`✅ Successfully fetched ${data.length} items.\n`);
 
     if (data.length > 0) {
-      const item = data[0]; // Test with the first item
-      const buyLink = `${SHOP_PAGE_URL.replace(/\/$/, '')}/order?shop_item_id=${item.id}`;
-      
-      console.log('--- PREVIEW: New Item Notification ---');
-      console.log(`Text: Heidi found a new item: ${item.name}!`);
-      console.log(`Block 1: <!channel> *Ooooh lookie here!* Heidi just spotted something new on the menu!`);
-      console.log(`         *${item.name}* 🌟`);
-      console.log(`         > ${item.description || '_No description provided, it\'s a mystery!_'} 🕵️‍♀️`);
-      console.log(`Block 2: 💸 *Prices:*\n${formatPrices(item.ticket_cost)}`);
-      console.log(`Block 3: 📦 *Stock:* ${item.stock ?? 'Unlimited'} left!`);
-      if (item.image_url) console.log(`Block 4: [Image] ${item.image_url}`);
-      console.log(`Block 5: 🔗 *Check it out here:* <${buyLink}|Flavortown Shop>`);
-      console.log('--------------------------------------\n');
+      // Find specific items to test
+      const testItems = [
+        data.find(i => i.name.toLowerCase().includes('raspberry pi 5')) || data[0],
+        data.find(i => i.name.toLowerCase().includes('hyperpixel'))
+      ].filter(Boolean);
 
-      console.log('--- PREVIEW: Update Notification ---');
-      console.log(`Text: Heidi noticed a change for ${item.name}!`);
-      console.log(`Block 1: <!channel> *Heads up!* Heidi noticed some changes for *${item.name}*! 🧐`);
-      console.log(`         💸 *Prices changed:*`);
-      console.log(`         *Before:* \n${formatPrices(item.ticket_cost)}`);
-      console.log(`         *Now:* \n${formatPrices(item.ticket_cost)}`);
-      console.log(`         📦 *Stock changed:* ${item.stock ?? 'Unlimited'} -> ${item.stock ?? 'Unlimited'} left!`);
-      console.log('--------------------------------------\n');
+      for (const item of testItems) {
+        const buyLink = `${SHOP_PAGE_URL.replace(/\/$/, '')}/order?shop_item_id=${item.id}`;
+        
+        console.log(`\n=== PREVIEW FOR: ${item.name} ===`);
+        console.log('--- PREVIEW: New Item Notification ---');
+        console.log(`Text: Heidi found a new item: ${item.name}!`);
+        console.log(`Block 1: <!channel> *Ooooh lookie here!* Heidi just spotted something new on the menu!`);
+        console.log(`         *${item.name}* 🌟`);
+        console.log(`         > ${item.description || '_No description provided, it\'s a mystery!_'} 🕵️‍♀️`);
+        console.log(`Block 2: 💸 *Prices:*\n${formatPrices(item.ticket_cost)}`);
+        console.log(`Block 3: 📦 *Stock:* ${item.stock ?? 'Unlimited'} left!`);
+        if (item.image_url) console.log(`Block 4: [Image] ${item.image_url}`);
+        console.log(`Block 5: 🔗 *Check it out here:* <${buyLink}|Flavortown Shop>`);
+        console.log('--------------------------------------\n');
+
+        console.log('--- PREVIEW: Update Notification ---');
+        console.log(`Text: Heidi noticed a change for ${item.name}!`);
+        console.log(`Block 1: <!channel> *Heads up!* Heidi noticed some changes for *${item.name}*! 🧐`);
+        console.log(`         💸 *Prices changed:*`);
+        console.log(`         *Before:* \n${formatPrices(item.ticket_cost)}`);
+        console.log(`         *Now:* \n${formatPrices(item.ticket_cost)}`);
+        console.log(`         📦 *Stock changed:* ${item.stock ?? 'Unlimited'} -> ${item.stock ?? 'Unlimited'} left!`);
+        console.log(`         📝 *Description changed:*`);
+        console.log(`         *Before:* \n${truncate(item.description)}`);
+        console.log(`         *Now:* \n${truncate(item.description)}`);
+        console.log(`         🏷️ *Name changed:* ${truncate(item.name)} -> ${truncate(item.name)}`);
+        console.log(`         🖼️ *Image updated.*`);
+        console.log('--------------------------------------\n');
+      }
     }
-
     console.log('Heidi is ready to serve!');
     process.exit(0);
   } catch (error) {

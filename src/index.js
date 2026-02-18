@@ -78,8 +78,11 @@ function detectChanges(currentItems) {
     } else {
       const priceChanged = JSON.stringify(prevItem.ticket_cost) !== JSON.stringify(item.ticket_cost);
       const stockChanged = prevItem.stock !== item.stock;
+      const descriptionChanged = (prevItem.description || '') !== (item.description || '');
+      const nameChanged = (prevItem.name || '') !== (item.name || '');
+      const photoChanged = (prevItem.image_url || '') !== (item.image_url || '');
 
-      if (priceChanged || stockChanged) {
+      if (priceChanged || stockChanged || descriptionChanged || nameChanged || photoChanged) {
         changes.push({
           type: 'update',
           name: item.name,
@@ -90,6 +93,15 @@ function detectChanges(currentItems) {
           newStock: item.stock,
           priceChanged,
           stockChanged,
+          oldDescription: prevItem.description,
+          newDescription: item.description,
+          descriptionChanged,
+          oldName: prevItem.name,
+          newName: item.name,
+          nameChanged,
+          oldPhoto: prevItem.image_url,
+          newPhoto: item.image_url,
+          photoChanged,
           photo: item.image_url,
           buy_link: `${SHOP_PAGE_URL.replace(/\/$/, '')}/order?shop_item_id=${item.id}`
         });
@@ -102,7 +114,7 @@ function detectChanges(currentItems) {
   if (hasActualChanges) {
     console.log(`Changes detected (Total changes: ${changes.length}). Updating cache...`);
     
-    // Log price/stock changes for debugging
+    // Log price/stock/description/name/photo changes for debugging
     for (const change of changes) {
       if (change.type === 'update') {
         if (change.priceChanged) {
@@ -110,6 +122,15 @@ function detectChanges(currentItems) {
         }
         if (change.stockChanged) {
           console.log(`[SYNC] Stock changed for ${change.name}: ${change.oldStock} -> ${change.newStock}`);
+        }
+        if (change.descriptionChanged) {
+          console.log(`[SYNC] Description changed for ${change.name}`);
+        }
+        if (change.nameChanged) {
+          console.log(`[SYNC] Name changed: ${change.oldName} -> ${change.newName}`);
+        }
+        if (change.photoChanged) {
+          console.log(`[SYNC] Image URL changed for ${change.name}`);
         }
       }
     }
@@ -148,6 +169,12 @@ function formatPrices(prices) {
     .join('\n');
 }
 
+function truncate(text, max = 500) {
+  if (!text) return '_None_';
+  const str = String(text);
+  return str.length > max ? `${str.slice(0, max)}…` : str;
+}
+
 async function fetchShopItems() {
   try {
     const storeEndpoint = `${FLAVORTOWN_API_URL.replace(/\/$/, '')}/api/v1/store?t=${Date.now()}`;
@@ -162,7 +189,10 @@ async function fetchShopItems() {
     }
 
     const response = await fetch(storeEndpoint, { headers });
-    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`HTTP error! status: ${response.status}, body: ${errorText}`);
+    }
     
     const data = await response.json();
     console.log('Successfully fetched shop items.');
@@ -214,6 +244,15 @@ async function fetchShopItems() {
           }
           if (change.stockChanged) {
             updateDetails += `*Stock changed:* ${change.oldStock ?? 'Unlimited'} -> ${change.newStock ?? 'Unlimited'} left!\n`;
+          }
+          if (change.descriptionChanged) {
+            updateDetails += `*Description changed:*\n*Before:*\n${truncate(change.oldDescription)}\n*Now:*\n${truncate(change.newDescription)}\n`;
+          }
+          if (change.nameChanged) {
+            updateDetails += `*Name changed:* ${truncate(change.oldName, 120)} -> ${truncate(change.newName, 120)}\n`;
+          }
+          if (change.photoChanged) {
+            updateDetails += `*Image updated.*\n`;
           }
 
           blocks = [
@@ -273,5 +312,3 @@ async function fetchShopItems() {
     process.exit(1);
   }
 })();
-
-
