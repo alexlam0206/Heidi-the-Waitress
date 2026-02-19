@@ -79,10 +79,11 @@ function detectChanges(currentItems) {
       const priceChanged = JSON.stringify(prevItem.ticket_cost) !== JSON.stringify(item.ticket_cost);
       const stockChanged = prevItem.stock !== item.stock;
       const descriptionChanged = (prevItem.description || '') !== (item.description || '');
+      const longDescChanged = (prevItem.long_description || '') !== (item.long_description || '');
       const nameChanged = (prevItem.name || '') !== (item.name || '');
       const photoChanged = (prevItem.image_url || '') !== (item.image_url || '');
 
-      if (priceChanged || stockChanged || descriptionChanged || nameChanged || photoChanged) {
+      if (priceChanged || stockChanged || descriptionChanged || longDescChanged || nameChanged || photoChanged) {
         changes.push({
           type: 'update',
           name: item.name,
@@ -96,6 +97,9 @@ function detectChanges(currentItems) {
           oldDescription: prevItem.description,
           newDescription: item.description,
           descriptionChanged,
+          oldLongDescription: prevItem.long_description,
+          newLongDescription: item.long_description,
+          longDescChanged,
           oldName: prevItem.name,
           newName: item.name,
           nameChanged,
@@ -114,7 +118,6 @@ function detectChanges(currentItems) {
   if (hasActualChanges) {
     console.log(`Changes detected (Total changes: ${changes.length}). Updating cache...`);
     
-    // Log price/stock/description/name/photo changes for debugging
     for (const change of changes) {
       if (change.type === 'update') {
         if (change.priceChanged) {
@@ -125,6 +128,9 @@ function detectChanges(currentItems) {
         }
         if (change.descriptionChanged) {
           console.log(`[SYNC] Description changed for ${change.name}`);
+        }
+        if (change.longDescChanged) {
+          console.log(`[SYNC] Long description changed for ${change.name}`);
         }
         if (change.nameChanged) {
           console.log(`[SYNC] Name changed: ${change.oldName} -> ${change.newName}`);
@@ -175,6 +181,33 @@ function truncate(text, max = 500) {
   return str.length > max ? `${str.slice(0, max)}…` : str;
 }
 
+function markdownToSlack(text) {
+  if (!text) return text;
+  let out = text;
+  
+  // 1. Links: [text](url) -> <url|text>
+  out = out.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<$2|$1>');
+  
+  // 2. Bold: **text** -> *text*
+  const BOLD = '\u0002'; // Start of text
+  out = out.replace(/\*\*(.*?)\*\*/g, `${BOLD}$1${BOLD}`);
+  out = out.replace(/__(.*?)__/g, `${BOLD}$1${BOLD}`);
+  
+  // 3. Italic: *text* -> _text_
+  out = out.replace(/\*([^\*]+)\*/g, '_$1_');
+  
+  // 4. Restore Bold
+  out = out.split(BOLD).join('*');
+  
+  // 5. Strikethrough
+  out = out.replace(/~~(.*?)~~/g, '~$1~');
+  
+  // 6. Headers
+  out = out.replace(/^#+\s*(.*)$/gm, '*$1*');
+  
+  return out;
+}
+
 async function fetchShopItems() {
   try {
     const storeEndpoint = `${FLAVORTOWN_API_URL.replace(/\/$/, '')}/api/v1/store?t=${Date.now()}`;
@@ -197,13 +230,6 @@ async function fetchShopItems() {
     const data = await response.json();
     console.log('Successfully fetched shop items.');
     
-    // Debug specific item stock
-    const ssd = data.find(item => item.name === '2TB SSD');
-    if (ssd) {
-      console.log(`[DEBUG] 2TB SSD Full Object Keys: ${Object.keys(ssd).join(', ')}`);
-      console.log(`[DEBUG] 2TB SSD Stock value: ${ssd.stock}`);
-    }
-    
     const changes = detectChanges(data);
 
     if (SLACK_CHANNEL_ID && changes.length > 0) {
@@ -218,7 +244,7 @@ async function fetchShopItems() {
               type: "section",
               text: {
                 type: "mrkdwn",
-                text: `<!channel> *Ooooh lookie here!* Heidi just spotted something new on the menu! :ultrafastparrot: :flavortown: :yay: \n\n*${change.name}* \n> ${change.description || '_No description provided, it\'s a mystery!_'}`
+                text: `<!channel> *Ooooh lookie here!* Heidi just spotted something new on the menu! :ultrafastparrot: :flavortown: :yay: \n\n*${change.name}* \n> ${markdownToSlack(change.description) || '_No description provided, it\'s a mystery!_'}`
               }
             },
             {
@@ -239,14 +265,21 @@ async function fetchShopItems() {
         } else if (change.type === 'update') {
           messageText = `Heidi noticed a change for ${change.name}!`;
           let updateDetails = '';
+          let priceDetails = '';
           if (change.priceChanged) {
-            updateDetails += `*Prices changed:*\n*Before:*\n${formatPrices(change.oldPrices)}\n*Now:*\n${formatPrices(change.newPrices)}\n`;
+            priceDetails = `*Prices changed:*\n*Before:*\n${formatPrices(change.oldPrices)}\n*Now:*\n${formatPrices(change.newPrices)}\n`;
+          } else {
+            priceDetails = `*Current Prices:*\n${formatPrices(change.newPrices)}\n`;
           }
+
           if (change.stockChanged) {
             updateDetails += `*Stock changed:* ${change.oldStock ?? 'Unlimited'} -> ${change.newStock ?? 'Unlimited'} left!\n`;
           }
           if (change.descriptionChanged) {
-            updateDetails += `*Description changed:*\n*Before:*\n${truncate(change.oldDescription)}\n*Now:*\n${truncate(change.newDescription)}\n`;
+            updateDetails += `*Description changed:*\n*Before:*\n${markdownToSlack(truncate(change.oldDescription))}\n*Now:*\n${markdownToSlack(truncate(change.newDescription))}\n`;
+          }
+          if (change.longDescChanged) {
+            updateDetails += `*Long description changed:*\n*Before:*\n${markdownToSlack(truncate(change.oldLongDescription))}\n*Now:*\n${markdownToSlack(truncate(change.newLongDescription))}\n`;
           }
           if (change.nameChanged) {
             updateDetails += `*Name changed:* ${truncate(change.oldName, 120)} -> ${truncate(change.newName, 120)}\n`;
@@ -261,6 +294,13 @@ async function fetchShopItems() {
               text: {
                 type: "mrkdwn",
                 text: `<!channel> *Heads up!* Heidi noticed some changes for *${change.name}*! :huh: \n\n${updateDetails}`
+              }
+            },
+            {
+              type: "section",
+              text: {
+                type: "mrkdwn",
+                text: priceDetails
               }
             }
           ];
@@ -286,7 +326,9 @@ async function fetchShopItems() {
           channel: SLACK_CHANNEL_ID,
           text: messageText,
           blocks: blocks,
-          link_names: true
+          link_names: true,
+          unfurl_links: false,
+          unfurl_media: false
         });
       }
       console.log(`Posted ${changes.length} updates to Slack.`);

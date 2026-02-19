@@ -55,6 +55,36 @@ function truncate(text, max = 500) {
   return str.length > max ? `${str.slice(0, max)}…` : str;
 }
 
+function markdownToSlack(text) {
+  if (!text) return text;
+  let out = text;
+  
+  // 1. Links: [text](url) -> <url|text>
+  out = out.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<$2|$1>');
+  
+  // 2. Bold: **text** -> *text*
+  // We use a temporary placeholder for the * to avoid confusing it with italic *
+  const BOLD = '\u0002'; // Start of text
+  out = out.replace(/\*\*(.*?)\*\*/g, `${BOLD}$1${BOLD}`);
+  out = out.replace(/__(.*?)__/g, `${BOLD}$1${BOLD}`);
+  
+  // 3. Italic: *text* -> _text_
+  // Only match * if it's not our placeholder
+  out = out.replace(/\*([^\*]+)\*/g, '_$1_');
+  // _text_ is already correct for Slack, so we leave it (or ensure it's _text_)
+  
+  // 4. Restore Bold
+  out = out.split(BOLD).join('*');
+  
+  // 5. Strikethrough
+  out = out.replace(/~~(.*?)~~/g, '~$1~');
+  
+  // 6. Headers
+  out = out.replace(/^#+\s*(.*)$/gm, '*$1*');
+  
+  return out;
+}
+
 async function testOutput() {
   try {
     const storeEndpoint = `${FLAVORTOWN_API_URL.replace(/\/$/, '')}/api/v1/store`;
@@ -86,7 +116,7 @@ async function testOutput() {
         console.log(`Text: Heidi found a new item: ${item.name}!`);
         console.log(`Block 1: <!channel> *Ooooh lookie here!* Heidi just spotted something new on the menu!`);
         console.log(`         *${item.name}* 🌟`);
-        console.log(`         > ${item.description || '_No description provided, it\'s a mystery!_'} 🕵️‍♀️`);
+        console.log(`         > ${markdownToSlack(item.description) || '_No description provided, it\'s a mystery!_'} 🕵️‍♀️`);
         console.log(`Block 2: 💸 *Prices:*\n${formatPrices(item.ticket_cost)}`);
         console.log(`Block 3: 📦 *Stock:* ${item.stock ?? 'Unlimited'} left!`);
         if (item.image_url) console.log(`Block 4: [Image] ${item.image_url}`);
@@ -101,10 +131,15 @@ async function testOutput() {
         console.log(`         *Now:* \n${formatPrices(item.ticket_cost)}`);
         console.log(`         📦 *Stock changed:* ${item.stock ?? 'Unlimited'} -> ${item.stock ?? 'Unlimited'} left!`);
         console.log(`         📝 *Description changed:*`);
-        console.log(`         *Before:* \n${truncate(item.description)}`);
-        console.log(`         *Now:* \n${truncate(item.description)}`);
+        console.log(`         *Before:* \n${markdownToSlack(truncate(item.description))}`);
+        console.log(`         *Now:* \n${markdownToSlack(truncate(item.description))}`);
+        console.log(`         📖 *Long description changed:*`);
+        console.log(`         *Before:* \n${markdownToSlack(truncate(item.long_description))}`);
+        console.log(`         *Now:* \n${markdownToSlack(truncate(item.long_description))}`);
         console.log(`         🏷️ *Name changed:* ${truncate(item.name)} -> ${truncate(item.name)}`);
         console.log(`         🖼️ *Image updated.*`);
+        console.log(`Block 2: 💸 *Prices (Dedicated Block):*`);
+        console.log(`         ${formatPrices(item.ticket_cost)}`);
         console.log('--------------------------------------\n');
       }
     }
