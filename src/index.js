@@ -11,6 +11,261 @@ const app = new App({
   appToken: process.env.SLACK_APP_TOKEN
 });
 
+// Shortcut to edit message
+app.shortcut('edit_heidi_message', async ({ shortcut, ack, client, body }) => {
+  await ack();
+
+  // Check if user is authorized
+  const allowedUserIds = ['U054VC2KM9P', 'U0A1NME3EJD'];
+  
+  if (!allowedUserIds.includes(body.user.id)) {
+    try {
+      await client.chat.postEphemeral({
+        channel: shortcut.channel.id,
+        user: body.user.id,
+        text: ":stop: Sorry, only @nok and @amber can edit messages, DM @nok if you need access!"
+      });
+    } catch (e) {
+      console.error(e);
+    }
+    return;
+  }
+
+  try {
+    // Extract text and image from existing blocks
+    let markdownContent = '';
+    let imageUrl = '';
+    let buyLink = '';
+
+    if (shortcut.message.blocks) {
+      const textSections = [];
+      for (const block of shortcut.message.blocks) {
+        if (block.type === 'section' && block.text && block.text.type === 'mrkdwn') {
+          const text = block.text.text;
+          // Check if it's the "Buy now!" link section
+          const buyMatch = text.match(/<([^|]+)\|Buy now!>/);
+          if (buyMatch) {
+            buyLink = buyMatch[1];
+          } else {
+            textSections.push(text);
+          }
+        } else if (block.type === 'image') {
+          imageUrl = block.image_url;
+        }
+      }
+      markdownContent = textSections.join('\n\n---\n\n');
+    }
+
+    const blocksJson = shortcut.message.blocks ? JSON.stringify(shortcut.message.blocks, null, 2) : '';
+    
+    await client.views.open({
+      trigger_id: shortcut.trigger_id,
+      view: {
+        type: 'modal',
+        callback_id: 'edit_message_submission',
+        private_metadata: JSON.stringify({
+          channel: shortcut.channel.id,
+          ts: shortcut.message.ts
+        }),
+        title: {
+          type: 'plain_text',
+          text: 'Edit Message'
+        },
+        blocks: [
+          {
+            type: 'input',
+            block_id: 'markdown_input',
+            element: {
+              type: 'plain_text_input',
+              action_id: 'content',
+              multiline: true,
+              initial_value: markdownContent,
+              placeholder: {
+                type: 'plain_text',
+                text: 'Enter message content here...'
+              }
+            },
+            label: {
+              type: 'plain_text',
+              text: 'Message Content (Markdown)'
+            },
+            hint: {
+              type: 'plain_text',
+              text: 'Use --- on a new line to separate sections into different blocks.'
+            }
+          },
+          {
+            type: 'input',
+            block_id: 'image_input',
+            optional: true,
+            element: {
+              type: 'plain_text_input',
+              action_id: 'url',
+              initial_value: imageUrl,
+              placeholder: {
+                type: 'plain_text',
+                text: 'https://...'
+              }
+            },
+            label: {
+              type: 'plain_text',
+              text: 'Image URL'
+            }
+          },
+          {
+            type: 'input',
+            block_id: 'buy_link_input',
+            optional: true,
+            element: {
+              type: 'plain_text_input',
+              action_id: 'url',
+              initial_value: buyLink,
+              placeholder: {
+                type: 'plain_text',
+                text: 'https://...'
+              }
+            },
+            label: {
+              type: 'plain_text',
+              text: 'Buy Link URL'
+            }
+          },
+          {
+            type: 'section',
+            text: {
+              type: 'mrkdwn',
+              text: '*Advanced Options*'
+            }
+          },
+          {
+            type: 'input',
+            block_id: 'text_input',
+            optional: true,
+            element: {
+              type: 'plain_text_input',
+              action_id: 'content',
+              multiline: true,
+              initial_value: shortcut.message.text || ''
+            },
+            label: {
+              type: 'plain_text',
+              text: 'Fallback Text'
+            }
+          },
+          {
+            type: 'input',
+            block_id: 'blocks_input',
+            optional: true,
+            element: {
+              type: 'plain_text_input',
+              action_id: 'content',
+              multiline: true,
+              initial_value: blocksJson,
+              placeholder: {
+                type: 'plain_text',
+                text: '[]'
+              }
+            },
+            label: {
+              type: 'plain_text',
+              text: 'Raw Blocks (JSON) - Fallback if Markdown is empty'
+            }
+          }
+        ],
+        submit: {
+          type: 'plain_text',
+          text: 'Save Changes'
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error opening edit modal:', error);
+  }
+});
+
+// Handle edit message submission
+app.view('edit_message_submission', async ({ ack, body, view, client }) => {
+  const metadata = JSON.parse(view.private_metadata);
+  const fallbackText = view.state.values.text_input.content.value;
+  const blocksString = view.state.values.blocks_input.content.value;
+  const markdownContent = view.state.values.markdown_input.content.value;
+  const imageUrl = view.state.values.image_input.url.value;
+  const buyLink = view.state.values.buy_link_input.url.value;
+  
+  let blocks = undefined;
+  
+  if (markdownContent && markdownContent.trim() !== '') {
+    // Rebuild blocks from markdown content
+    blocks = [];
+    
+    // Split content by separator '---' or handle it as one big block
+    const sections = markdownContent.split(/\n\s*---\s*\n/).filter(s => s.trim() !== '');
+    
+    for (const section of sections) {
+      blocks.push({
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: section.trim()
+        }
+      });
+    }
+
+    if (imageUrl) {
+      blocks.push({
+        type: "image",
+        image_url: imageUrl,
+        alt_text: "Attached image"
+      });
+    }
+
+    if (buyLink) {
+      blocks.push({
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: `*<${buyLink}|Buy now!>*`
+        }
+      });
+    }
+  } else if (blocksString && blocksString.trim() !== '') {
+    // Fallback to raw JSON if Markdown is empty
+    try {
+      blocks = JSON.parse(blocksString);
+    } catch (e) {
+      await ack({
+        response_action: 'errors',
+        errors: {
+          blocks_input: 'Invalid JSON format'
+        }
+      });
+      return;
+    }
+  }
+
+  await ack();
+
+  try {
+    await client.chat.update({
+      channel: metadata.channel,
+      ts: metadata.ts,
+      text: fallbackText || 'Heidi update!',
+      blocks: blocks
+    });
+  } catch (error) {
+    console.error('Error updating message:', error);
+    try {
+      await client.chat.postEphemeral({
+        channel: metadata.channel,
+        user: body.user.id,
+        text: `:warning: Failed to update message: ${error.message}`
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  }
+});
+
 const FLAVORTOWN_API_URL = process.env.FLAVORTOWN_API_URL || 'https://flavortown.hackclub.com';
 const FETCH_INTERVAL_MS = parseInt(process.env.FETCH_INTERVAL_MS || '300000', 10);
 const FLAVORTOWN_API_KEY = process.env.FLAVORTOWN_API_KEY;
@@ -153,10 +408,17 @@ function detectChanges(currentItems) {
 function formatPrices(prices) {
   if (!prices) return 'Unknown';
   
-  const regions = Object.entries(prices).filter(([key]) => key !== 'base_cost');
+  const regions = Object.entries(prices).filter(
+    ([key, price]) => {
+      if (key === 'base_cost' || key.startsWith('enabled_') || price == null) return false;
+      const enabledKey = `enabled_${key}`;
+      return prices[enabledKey] !== false;
+    }
+  );
+  if (regions.length === 0) return 'Unknown';
   const uniquePrices = new Set(regions.map(([_, price]) => price));
 
-  if (uniquePrices.size === 1) {
+  if (uniquePrices.size === 1 && regions.length > 1) {
     return `${uniquePrices.values().next().value} :ft-cookie:`;
   }
 
@@ -236,7 +498,7 @@ async function fetchShopItems() {
       for (const change of changes) {
         let messageText = '';
         let blocks = [];
-
+ 
         if (change.type === 'new') {
           messageText = `Heidi found a new item: ${change.name}!`;
           blocks = [
@@ -278,9 +540,7 @@ async function fetchShopItems() {
           if (change.descriptionChanged) {
             updateDetails += `*Description changed:*\n*Before:*\n${markdownToSlack(truncate(change.oldDescription))}\n*Now:*\n${markdownToSlack(truncate(change.newDescription))}\n`;
           }
-          if (change.longDescChanged) {
-            updateDetails += `*Long description changed:*\n*Before:*\n${markdownToSlack(truncate(change.oldLongDescription))}\n*Now:*\n${markdownToSlack(truncate(change.newLongDescription))}\n`;
-          }
+          // Long description changes handled in separate blocks below
           if (change.nameChanged) {
             updateDetails += `*Name changed:* ${truncate(change.oldName, 120)} -> ${truncate(change.newName, 120)}\n`;
           }
@@ -288,12 +548,17 @@ async function fetchShopItems() {
             updateDetails += `*Image updated.*\n`;
           }
 
+          let headerText = `<!channel> *Heads up!* Heidi noticed some changes for *${change.name}*! :huh:`;
+          if (updateDetails) {
+            headerText += `\n\n${updateDetails}`;
+          }
+
           blocks = [
             {
               type: "section",
               text: {
                 type: "mrkdwn",
-                text: `<!channel> *Heads up!* Heidi noticed some changes for *${change.name}*! :huh: \n\n${updateDetails}`
+                text: headerText
               }
             },
             {
@@ -304,6 +569,30 @@ async function fetchShopItems() {
               }
             }
           ];
+
+          if (change.longDescChanged) {
+            blocks.push({
+              type: "section",
+              text: {
+                type: "mrkdwn",
+                text: "*Long description changed:*"
+              }
+            });
+            blocks.push({
+              type: "section",
+              text: {
+                type: "mrkdwn",
+                text: `*Before:*\n${markdownToSlack(truncate(change.oldLongDescription, 2000))}`
+              }
+            });
+            blocks.push({
+              type: "section",
+              text: {
+                type: "mrkdwn",
+                text: `*Now:*\n${markdownToSlack(truncate(change.newLongDescription, 2000))}`
+              }
+            });
+          }
         }
 
         if (change.photo) {

@@ -27,10 +27,17 @@ const SLACK_CHANNEL_ID = getChannelId(SLACK_CHANNEL_URL);
 function formatPrices(prices) {
   if (!prices) return 'Unknown';
   
-  const regions = Object.entries(prices).filter(([key]) => key !== 'base_cost');
+  const regions = Object.entries(prices).filter(
+    ([key, price]) => {
+      if (key === 'base_cost' || key.startsWith('enabled_') || price == null) return false;
+      const enabledKey = `enabled_${key}`;
+      return prices[enabledKey] !== false;
+    }
+  );
+  if (regions.length === 0) return 'Unknown';
   const uniquePrices = new Set(regions.map(([_, price]) => price));
 
-  if (uniquePrices.size === 1) {
+  if (uniquePrices.size === 1 && regions.length > 1) {
     return `${uniquePrices.values().next().value} :ft-cookie:`;
   }
 
@@ -131,15 +138,18 @@ async function testOutput() {
         console.log(`         *Now:* \n${formatPrices(item.ticket_cost)}`);
         console.log(`         📦 *Stock changed:* ${item.stock ?? 'Unlimited'} -> ${item.stock ?? 'Unlimited'} left!`);
         console.log(`         📝 *Description changed:*`);
-        console.log(`         *Before:* \n${markdownToSlack(truncate(item.description))}`);
-        console.log(`         *Now:* \n${markdownToSlack(truncate(item.description))}`);
-        console.log(`         📖 *Long description changed:*`);
-        console.log(`         *Before:* \n${markdownToSlack(truncate(item.long_description))}`);
-        console.log(`         *Now:* \n${markdownToSlack(truncate(item.long_description))}`);
-        console.log(`         🏷️ *Name changed:* ${truncate(item.name)} -> ${truncate(item.name)}`);
-        console.log(`         🖼️ *Image updated.*`);
-        console.log(`Block 2: 💸 *Prices (Dedicated Block):*`);
-        console.log(`         ${formatPrices(item.ticket_cost)}`);
+          console.log(`         *Before:* \n${markdownToSlack(truncate(item.description))}`);
+          console.log(`         *Now:* \n${markdownToSlack(truncate(item.description))}`);
+          // Long description logic moved to separate blocks
+          console.log(`         🏷️ *Name changed:* ${truncate(item.name)} -> ${truncate(item.name)}`);
+          console.log(`         🖼️ *Image updated.*`);
+
+          console.log(`Block 2: 💸 *Prices (Dedicated Block):*`);
+          console.log(`         ${formatPrices(item.ticket_cost)}`);
+
+          console.log(`Block 3: 📖 *Long description changed:*`);
+          console.log(`Block 4: *Before:* \n${markdownToSlack(truncate(item.long_description, 2000))}`);
+          console.log(`Block 5: *Now:* \n${markdownToSlack(truncate(item.long_description, 2000))}`);
         console.log('--------------------------------------\n');
       }
     }
