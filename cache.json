@@ -371,49 +371,6 @@
     }
   },
   {
-    "id": 14,
-    "name": "1TB Storage",
-    "description": "1TB Storage for Apple devices",
-    "old_prices": [],
-    "limited": false,
-    "stock": null,
-    "type": "ShopItem::Accessory",
-    "show_in_carousel": false,
-    "accessory_tag": "storage",
-    "agh_contents": "",
-    "attached_shop_item_ids": [
-      null,
-      10,
-      9,
-      19
-    ],
-    "buyable_by_self": false,
-    "long_description": null,
-    "max_qty": null,
-    "one_per_person_ever": false,
-    "sale_percentage": null,
-    "image_url": "https://flavortown.hackclub.com/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6MjcyLCJwdXIiOiJibG9iX2lkIn19--cea58cd9dfd898d97dfad740f11363eed97a2575/1tbstorage.png",
-    "enabled": {
-      "enabled_au": true,
-      "enabled_ca": true,
-      "enabled_eu": true,
-      "enabled_in": true,
-      "enabled_uk": true,
-      "enabled_us": true,
-      "enabled_xx": true
-    },
-    "ticket_cost": {
-      "base_cost": 1600,
-      "au": 1600,
-      "ca": 1600,
-      "eu": 1600,
-      "in": 1600,
-      "uk": 1600,
-      "us": 1600,
-      "xx": 1600
-    }
-  },
-  {
     "id": 12,
     "name": "32GB Memory",
     "description": "32GB Memory for Apple devices",
@@ -576,49 +533,6 @@
       "uk": 0,
       "us": 0,
       "xx": 0
-    }
-  },
-  {
-    "id": 13,
-    "name": "512GB Storage",
-    "description": "512GB Storage for Apple devices",
-    "old_prices": [],
-    "limited": false,
-    "stock": null,
-    "type": "ShopItem::Accessory",
-    "show_in_carousel": false,
-    "accessory_tag": "storage",
-    "agh_contents": "",
-    "attached_shop_item_ids": [
-      null,
-      10,
-      9,
-      19
-    ],
-    "buyable_by_self": false,
-    "long_description": null,
-    "max_qty": null,
-    "one_per_person_ever": false,
-    "sale_percentage": null,
-    "image_url": "https://flavortown.hackclub.com/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6MjY4LCJwdXIiOiJibG9iX2lkIn19--b142842fbefb493e1c3939be75dadf6b689e8f03/512gbstorage.png",
-    "enabled": {
-      "enabled_au": true,
-      "enabled_ca": true,
-      "enabled_eu": true,
-      "enabled_in": true,
-      "enabled_uk": true,
-      "enabled_us": true,
-      "enabled_xx": true
-    },
-    "ticket_cost": {
-      "base_cost": 800,
-      "au": 800,
-      "ca": 800,
-      "eu": 800,
-      "in": 800,
-      "uk": 800,
-      "us": 800,
-      "xx": 800
     }
   },
   {
@@ -833,53 +747,6 @@
     }
   },
   {
-    "id": 15,
-    "name": "GitHub Keycaps",
-    "description": "assorted pack of 8! click git!",
-    "old_prices": [
-      195
-    ],
-    "limited": true,
-    "stock": 17,
-    "type": "ShopItem::WarehouseItem",
-    "show_in_carousel": true,
-    "accessory_tag": "",
-    "agh_contents": [
-      {
-        "sku": "Swa/Git/Key/8-P",
-        "quantity": 1
-      }
-    ],
-    "attached_shop_item_ids": [
-      null
-    ],
-    "buyable_by_self": true,
-    "long_description": "",
-    "max_qty": null,
-    "one_per_person_ever": true,
-    "sale_percentage": null,
-    "image_url": "https://flavortown.hackclub.com/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6MjgyLCJwdXIiOiJibG9iX2lkIn19--7a1d0514fdf01e854dac0018d4f10a863c83b704/gh_keycaps%20Background%20Removed.png",
-    "enabled": {
-      "enabled_au": true,
-      "enabled_ca": true,
-      "enabled_eu": true,
-      "enabled_in": true,
-      "enabled_uk": true,
-      "enabled_us": true,
-      "enabled_xx": true
-    },
-    "ticket_cost": {
-      "base_cost": 180,
-      "au": 180,
-      "ca": 180,
-      "eu": 180,
-      "in": 180,
-      "uk": 180,
-      "us": 180,
-      "xx": 180
-    }
-  },
-  {
     "id": 11,
     "name": "24GB Memory",
     "description": "24GB memory for Apple devices",
@@ -1040,6 +907,90 @@
       "uk": 455.9925,
       "us": 471,
       "xx": 555.97
+    }
+  },
+  {
+    "id": 13,
+    "name": "512GB Storage",
+    "description": "512GB Storage for Apple devices",
+    "old_prices": [],
+    "limited": false,
+    "stock": null,
+    "type": "ShopItem::Accessory",
+    "show_in_carousel": false,
+    "accessory_tag": "storage",
+    "agh_contents": "",
+    "attached_shop_item_ids": [
+      null,
+      10,
+      19
+    ],
+    "buyable_by_self": false,
+    "long_description": "",
+    "max_qty": null,
+    "one_per_person_ever": false,
+    "sale_percentage": null,
+    "image_url": "https://flavortown.hackclub.com/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6MjY4LCJwdXIiOiJibG9iX2lkIn19--b142842fbefb493e1c3939be75dadf6b689e8f03/512gbstorage.png",
+    "enabled": {
+      "enabled_au": true,
+      "enabled_ca": true,
+      "enabled_eu": true,
+      "enabled_in": true,
+      "enabled_uk": true,
+      "enabled_us": true,
+      "enabled_xx": true
+    },
+    "ticket_cost": {
+      "base_cost": 800,
+      "au": 800,
+      "ca": 800,
+      "eu": 800,
+      "in": 800,
+      "uk": 800,
+      "us": 800,
+      "xx": 800
+    }
+  },
+  {
+    "id": 14,
+    "name": "1TB Storage",
+    "description": "1TB Storage for Apple devices (Not MBA)",
+    "old_prices": [],
+    "limited": false,
+    "stock": null,
+    "type": "ShopItem::Accessory",
+    "show_in_carousel": false,
+    "accessory_tag": "storage",
+    "agh_contents": "",
+    "attached_shop_item_ids": [
+      null,
+      10,
+      19
+    ],
+    "buyable_by_self": false,
+    "long_description": "",
+    "max_qty": null,
+    "one_per_person_ever": false,
+    "sale_percentage": null,
+    "image_url": "https://flavortown.hackclub.com/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6MjcyLCJwdXIiOiJibG9iX2lkIn19--cea58cd9dfd898d97dfad740f11363eed97a2575/1tbstorage.png",
+    "enabled": {
+      "enabled_au": true,
+      "enabled_ca": true,
+      "enabled_eu": true,
+      "enabled_in": true,
+      "enabled_uk": true,
+      "enabled_us": true,
+      "enabled_xx": true
+    },
+    "ticket_cost": {
+      "base_cost": 1600,
+      "au": 1600,
+      "ca": 1600,
+      "eu": 1600,
+      "in": 1600,
+      "uk": 1600,
+      "us": 1600,
+      "xx": 1600
     }
   },
   {
@@ -4270,6 +4221,47 @@
     }
   },
   {
+    "id": 117,
+    "name": "1TB Storage",
+    "description": "1TB storage for MBA",
+    "old_prices": [],
+    "limited": false,
+    "stock": null,
+    "type": "ShopItem::Accessory",
+    "show_in_carousel": false,
+    "accessory_tag": "storage",
+    "agh_contents": "",
+    "attached_shop_item_ids": [
+      null,
+      9
+    ],
+    "buyable_by_self": false,
+    "long_description": "",
+    "max_qty": null,
+    "one_per_person_ever": false,
+    "sale_percentage": null,
+    "image_url": "https://flavortown.hackclub.com/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6MjM0OTczLCJwdXIiOiJibG9iX2lkIn19--7098cb5ec657244fa95b1ced4c71c1ac46c2c715/1tbstorage.webp",
+    "enabled": {
+      "enabled_au": true,
+      "enabled_ca": true,
+      "enabled_eu": true,
+      "enabled_in": true,
+      "enabled_uk": true,
+      "enabled_us": true,
+      "enabled_xx": true
+    },
+    "ticket_cost": {
+      "base_cost": 800,
+      "au": 800,
+      "ca": 800,
+      "eu": 800,
+      "in": 800,
+      "uk": 800,
+      "us": 800,
+      "xx": 800
+    }
+  },
+  {
     "id": 116,
     "name": "Blåhaj",
     "description": "full-size! very huggable friend",
@@ -4387,6 +4379,133 @@
       "uk": 3052,
       "us": 3052,
       "xx": 3052
+    }
+  },
+  {
+    "id": 118,
+    "name": "Immich Retro CD",
+    "description": "immich-ine all those photos!",
+    "old_prices": [],
+    "limited": true,
+    "stock": 1,
+    "type": "ShopItem::HQMailItem",
+    "show_in_carousel": false,
+    "accessory_tag": "",
+    "agh_contents": "",
+    "attached_shop_item_ids": [
+      null
+    ],
+    "buyable_by_self": true,
+    "long_description": "A demo disk version of your favourite photo software (that's Immich!)\r\n\r\nhttps://immich.store/en-gbp/products/immich-retro\r\n\r\n(Doesn't contain a product key)",
+    "max_qty": null,
+    "one_per_person_ever": false,
+    "sale_percentage": null,
+    "image_url": "https://flavortown.hackclub.com/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6MjM1MDYxLCJwdXIiOiJibG9iX2lkIn19--dee2c2649f85e6f47aadd8b7f9f70c1f0fe277a3/7567c3e5-051c-44c5-b632-498859481924.png",
+    "enabled": {
+      "enabled_au": true,
+      "enabled_ca": true,
+      "enabled_eu": true,
+      "enabled_in": true,
+      "enabled_uk": true,
+      "enabled_us": true,
+      "enabled_xx": true
+    },
+    "ticket_cost": {
+      "base_cost": 225,
+      "au": 225,
+      "ca": 225,
+      "eu": 225,
+      "in": 225,
+      "uk": 175,
+      "us": 225,
+      "xx": 225
+    }
+  },
+  {
+    "id": 123,
+    "name": "Google Play Licence",
+    "description": "publish your own mobile apps!",
+    "old_prices": [],
+    "limited": false,
+    "stock": null,
+    "type": "ShopItem::HCBGrant",
+    "show_in_carousel": false,
+    "accessory_tag": "",
+    "agh_contents": "",
+    "attached_shop_item_ids": [
+      null
+    ],
+    "buyable_by_self": true,
+    "long_description": "You can use this grant card to buy a Google Chrome Web Store developer licence!\r\n\r\nIf you’re in the US you can use the grant card.\r\n\r\nIf you're outside the US, due to Google’s restrictions, you must pay yourself then convert the grant card to a reimbursement report and get reimbursed for the cost. **Do not use the grant card to pay or the money will be permanently lost.**\r\n\r\nLearn how to register for a developer account here",
+    "max_qty": null,
+    "one_per_person_ever": false,
+    "sale_percentage": null,
+    "image_url": "https://flavortown.hackclub.com/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6MjM4MTA3LCJwdXIiOiJibG9iX2lkIn19--3e532bf849b60e8ca6b43528e17d23f9ca35ae91/play%20store.png",
+    "enabled": {
+      "enabled_au": true,
+      "enabled_ca": true,
+      "enabled_eu": true,
+      "enabled_in": true,
+      "enabled_uk": true,
+      "enabled_us": true,
+      "enabled_xx": true
+    },
+    "ticket_cost": {
+      "base_cost": 88,
+      "au": 94.5,
+      "ca": 94.5,
+      "eu": 94.5,
+      "in": 169.25,
+      "uk": 94.5,
+      "us": 88,
+      "xx": 94.5
+    }
+  },
+  {
+    "id": 15,
+    "name": "GitHub Keycaps",
+    "description": "assorted pack of 8! click git!",
+    "old_prices": [
+      195
+    ],
+    "limited": true,
+    "stock": 17,
+    "type": "ShopItem::WarehouseItem",
+    "show_in_carousel": true,
+    "accessory_tag": "",
+    "agh_contents": [
+      {
+        "sku": "Swa/Git/Key/8-P",
+        "quantity": 1
+      }
+    ],
+    "attached_shop_item_ids": [
+      null
+    ],
+    "buyable_by_self": true,
+    "long_description": "",
+    "max_qty": null,
+    "one_per_person_ever": true,
+    "sale_percentage": 25,
+    "image_url": "https://flavortown.hackclub.com/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6MjgyLCJwdXIiOiJibG9iX2lkIn19--7a1d0514fdf01e854dac0018d4f10a863c83b704/gh_keycaps%20Background%20Removed.png",
+    "enabled": {
+      "enabled_au": true,
+      "enabled_ca": true,
+      "enabled_eu": true,
+      "enabled_in": true,
+      "enabled_uk": true,
+      "enabled_us": true,
+      "enabled_xx": true
+    },
+    "ticket_cost": {
+      "base_cost": 180,
+      "au": 180,
+      "ca": 180,
+      "eu": 180,
+      "in": 180,
+      "uk": 180,
+      "us": 180,
+      "xx": 180
     }
   }
 ]

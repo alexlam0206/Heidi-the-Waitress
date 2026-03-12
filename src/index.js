@@ -320,12 +320,15 @@ function detectChanges(currentItems) {
   for (const item of currentItems) {
     const prevItem = previousMap.get(item.id);
     
-    if (!prevItem) {
+      if (!prevItem) {
       changes.push({
         type: 'new',
         name: item.name,
         description: item.description,
+        long_description: item.long_description,
         prices: item.ticket_cost,
+          sale: item.sale_percentage,
+        enabled: item.enabled,
         stock: item.stock,
         photo: item.image_url,
         buy_link: `${SHOP_PAGE_URL.replace(/\/$/, '')}/order?shop_item_id=${item.id}`
@@ -337,18 +340,24 @@ function detectChanges(currentItems) {
       const longDescChanged = (prevItem.long_description || '') !== (item.long_description || '');
       const nameChanged = (prevItem.name || '') !== (item.name || '');
       const photoChanged = (prevItem.image_url || '') !== (item.image_url || '');
+      const saleChanged = (prevItem.sale_percentage || null) !== (item.sale_percentage || null);
 
-      if (priceChanged || stockChanged || descriptionChanged || longDescChanged || nameChanged || photoChanged) {
+      if (priceChanged || stockChanged || descriptionChanged || longDescChanged || nameChanged || photoChanged || saleChanged) {
         changes.push({
           type: 'update',
           name: item.name,
           description: item.description,
           oldPrices: prevItem.ticket_cost,
           newPrices: item.ticket_cost,
+          oldEnabled: prevItem.enabled,
+          newEnabled: item.enabled,
           oldStock: prevItem.stock,
           newStock: item.stock,
           priceChanged,
           stockChanged,
+          saleChanged,
+          oldSale: prevItem.sale_percentage,
+          newSale: item.sale_percentage,
           oldDescription: prevItem.description,
           newDescription: item.description,
           descriptionChanged,
@@ -405,21 +414,32 @@ function detectChanges(currentItems) {
   return changes;
 }
 
-function formatPrices(prices) {
+function formatPrices(prices, enabled, salePercentage) {
   if (!prices) return 'Unknown';
   
   const regions = Object.entries(prices).filter(
     ([key, price]) => {
-      if (key === 'base_cost' || key.startsWith('enabled_') || price == null) return false;
+      if (key === 'base_cost' || price == null) return false;
       const enabledKey = `enabled_${key}`;
-      return prices[enabledKey] !== false;
+      // Check if the region is enabled in the provided enabled object
+      if (enabled && typeof enabled === 'object') {
+        return enabled[enabledKey] !== false;
+      }
+      return true;
     }
   );
   if (regions.length === 0) return 'Unknown';
   const uniquePrices = new Set(regions.map(([_, price]) => price));
 
   if (uniquePrices.size === 1 && regions.length > 1) {
-    return `${uniquePrices.values().next().value} :ft-cookie:`;
+    const base = uniquePrices.values().next().value;
+    if (salePercentage != null && salePercentage !== 0) {
+      const discounted = Math.round((base * (100 - salePercentage) / 100) * 100) / 100;
+      const dispDiscounted = Number.isInteger(discounted) ? discounted : discounted.toFixed(2);
+      const dispBase = Number.isInteger(base) ? base : base.toFixed(2);
+      return `~${dispBase}~ ${dispDiscounted} :ft-cookie: (${salePercentage}% off)`;
+    }
+    return `${base} :ft-cookie:`;
   }
 
   const countryEmojis = {
@@ -433,7 +453,15 @@ function formatPrices(prices) {
   };
   
   return regions
-    .map(([country, price]) => `${countryEmojis[country] || country.toUpperCase()}: ${price} :ft-cookie:`)
+    .map(([country, price]) => {
+      const dispBase = Number.isInteger(price) ? price : price.toFixed(2);
+      if (salePercentage != null && salePercentage !== 0) {
+        const discounted = Math.round((price * (100 - salePercentage) / 100) * 100) / 100;
+        const dispDiscounted = Number.isInteger(discounted) ? discounted : discounted.toFixed(2);
+        return `${countryEmojis[country] || country.toUpperCase()}: ~${dispBase}~ ${dispDiscounted} :ft-cookie: (${salePercentage}% off)`;
+      }
+      return `${countryEmojis[country] || country.toUpperCase()}: ${dispBase} :ft-cookie:`;
+    })
     .join('\n');
 }
 
@@ -513,7 +541,7 @@ async function fetchShopItems() {
               type: "section",
               text: {
                 type: "mrkdwn",
-                text: `*Prices:*\n${formatPrices(change.prices)}`
+                text: `*Prices:*\n${formatPrices(change.prices, change.enabled, change.sale)}`
               }
             },
             {
@@ -524,18 +552,46 @@ async function fetchShopItems() {
               }
             }
           ];
+
+          if (change.long_description) {
+            blocks.push({
+              type: "section",
+              text: {
+                type: "mrkdwn",
+                text: `*Description:* \n${markdownToSlack(truncate(change.long_description, 2000))}`
+              }
+            });
+          }
+          if (change.sale != null) {
+            blocks.splice(1, 0, {
+              type: "section",
+              text: {
+                type: "mrkdwn",
+                text: `*Sale:* ${change.sale}% off`
+              }
+            });
+          }
         } else if (change.type === 'update') {
           messageText = `Heidi noticed a change for ${change.name}!`;
           let updateDetails = '';
           let priceDetails = '';
           if (change.priceChanged) {
-            priceDetails = `*Prices changed:*\n*Before:*\n${formatPrices(change.oldPrices)}\n*Now:*\n${formatPrices(change.newPrices)}\n`;
+            priceDetails = `*Prices changed:*\n*Before:*\n${formatPrices(change.oldPrices, change.oldEnabled, change.oldSale)}\n*Now:*\n${formatPrices(change.newPrices, change.newEnabled, change.newSale)}\n`;
           } else {
-            priceDetails = `*Current Prices:*\n${formatPrices(change.newPrices)}\n`;
+            priceDetails = `*Current Prices:*\n${formatPrices(change.newPrices, change.newEnabled, change.newSale)}\n`;
           }
 
           if (change.stockChanged) {
             updateDetails += `*Stock changed:* ${change.oldStock ?? 'Unlimited'} -> ${change.newStock ?? 'Unlimited'} left!\n`;
+          }
+          if (change.saleChanged) {
+            if (change.oldSale == null && change.newSale != null) {
+              updateDetails += `*Sale started:* ${change.newSale}% off\n`;
+            } else if (change.oldSale != null && change.newSale == null) {
+              updateDetails += `*Sale removed:* was ${change.oldSale}%\n`;
+            } else {
+              updateDetails += `*Sale changed:* ${change.oldSale}% -> ${change.newSale}%\n`;
+            }
           }
           if (change.descriptionChanged) {
             updateDetails += `*Description changed:*\n*Before:*\n${markdownToSlack(truncate(change.oldDescription))}\n*Now:*\n${markdownToSlack(truncate(change.newDescription))}\n`;
@@ -569,6 +625,29 @@ async function fetchShopItems() {
               }
             }
           ];
+
+          if (change.saleChanged && !updateDetails.includes('*Sale')) {
+            let saleText = '';
+            if (change.newSale == null) saleText = `Sale removed (was ${change.oldSale}%)`;
+            else if (change.oldSale == null) saleText = `Sale started: ${change.newSale}% off`;
+            else saleText = `Sale: ${change.oldSale}% -> ${change.newSale}%`;
+            blocks.splice(2, 0, {
+              type: "section",
+              text: {
+                type: "mrkdwn",
+                text: `*Sale:* ${saleText}`
+              }
+            });
+          }
+
+          // Always include current stock in the message
+          blocks.push({
+            type: "section",
+            text: {
+              type: "mrkdwn",
+              text: `*Stock:* ${change.newStock ?? 'Unlimited'} left!`
+            }
+          });
 
           if (change.longDescChanged) {
             blocks.push({
