@@ -193,13 +193,13 @@
     },
     "ticket_cost": {
       "base_cost": 405,
-      "au": 459.99,
+      "au": 460,
       "ca": 405,
-      "eu": 469.98,
-      "in": 464.985,
-      "uk": 459.99,
-      "us": 430.02,
-      "xx": 705.015
+      "eu": 470,
+      "in": 465,
+      "uk": 460,
+      "us": 430,
+      "xx": 705
     }
   },
   {
@@ -819,13 +819,13 @@
     },
     "ticket_cost": {
       "base_cost": 608,
-      "au": 537.98,
-      "ca": 572.99,
-      "eu": 723.02,
+      "au": 538,
+      "ca": 573,
+      "eu": 723,
       "in": 608,
-      "uk": 702.995,
+      "uk": 703,
       "us": 608,
-      "xx": 948.02
+      "xx": 948
     }
   },
   {
@@ -900,13 +900,13 @@
     },
     "ticket_cost": {
       "base_cost": 471,
-      "au": 511.02,
-      "ca": 455.9925,
-      "eu": 481.005,
-      "in": 346.01,
-      "uk": 455.9925,
+      "au": 511,
+      "ca": 456,
+      "eu": 481,
+      "in": 346,
+      "uk": 456,
       "us": 471,
-      "xx": 555.97
+      "xx": 556
     }
   },
   {
@@ -1299,13 +1299,13 @@
     },
     "ticket_cost": {
       "base_cost": 1050,
-      "au": 1275.015,
-      "ca": 969.99,
+      "au": 1275,
+      "ca": 970,
       "eu": 700,
-      "in": 859.985,
+      "in": 860,
       "uk": 700,
       "us": 1050,
-      "xx": 1800.015
+      "xx": 1800
     }
   },
   {
@@ -1701,13 +1701,13 @@
     },
     "ticket_cost": {
       "base_cost": 176,
-      "au": 180.995,
+      "au": 181,
       "ca": 176,
       "eu": 221,
       "in": 176,
-      "uk": 225.995,
+      "uk": 226,
       "us": 176,
-      "xx": 306.005
+      "xx": 306
     }
   },
   {
@@ -2724,11 +2724,11 @@
     },
     "ticket_cost": {
       "base_cost": 1540,
-      "au": 1544.995,
-      "ca": 1305.01,
-      "eu": 1255.015,
+      "au": 1545,
+      "ca": 1305,
+      "eu": 1255,
       "in": 1540,
-      "uk": 1684.99,
+      "uk": 1685,
       "us": 1540,
       "xx": 1540
     }
@@ -3423,13 +3423,13 @@
     },
     "ticket_cost": {
       "base_cost": 776,
-      "au": 831.0275,
-      "ca": 676.0075,
-      "eu": 781.0025,
-      "in": 781.0025,
-      "uk": 811.0175,
+      "au": 831,
+      "ca": 676,
+      "eu": 781,
+      "in": 781,
+      "uk": 811,
       "us": 776,
-      "xx": 926.0175
+      "xx": 926
     }
   },
   {
@@ -3892,6 +3892,46 @@
     }
   },
   {
+    "id": 7,
+    "name": "Smolhåj",
+    "description": "soft and huggable. a true friend :)",
+    "old_prices": [],
+    "limited": false,
+    "stock": null,
+    "type": "ShopItem::ThirdPartyPhysical",
+    "show_in_carousel": false,
+    "accessory_tag": "",
+    "agh_contents": "",
+    "attached_shop_item_ids": [
+      null
+    ],
+    "buyable_by_self": true,
+    "long_description": "If IKEA does not directly ship to your country, it'll come from America, in which case customs fees may apply.",
+    "max_qty": null,
+    "one_per_person_ever": false,
+    "sale_percentage": null,
+    "image_url": "https://flavortown.hackclub.com/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6MjM1LCJwdXIiOiJibG9iX2lkIn19--34b25d54db53c692f44b9f67a4c1f6ffd2eb391c/blahaj.png",
+    "enabled": {
+      "enabled_au": true,
+      "enabled_ca": true,
+      "enabled_eu": true,
+      "enabled_in": true,
+      "enabled_uk": true,
+      "enabled_us": false,
+      "enabled_xx": true
+    },
+    "ticket_cost": {
+      "base_cost": 133,
+      "au": 78,
+      "ca": 98,
+      "eu": 118,
+      "in": 73,
+      "uk": 78,
+      "us": 133,
+      "xx": 133
+    }
+  },
+  {
     "id": 103,
     "name": "Signed photo of Amber",
     "description": "now you can carry around your own amber!",
@@ -3926,49 +3966,9 @@
       "ca": 33,
       "eu": 33,
       "in": 33,
-      "uk": 33,
+      "uk": 8,
       "us": 33,
       "xx": 33
-    }
-  },
-  {
-    "id": 7,
-    "name": "Smolhåj",
-    "description": "soft and huggable. a true friend :)",
-    "old_prices": [],
-    "limited": false,
-    "stock": null,
-    "type": "ShopItem::ThirdPartyPhysical",
-    "show_in_carousel": false,
-    "accessory_tag": "",
-    "agh_contents": "",
-    "attached_shop_item_ids": [
-      null
-    ],
-    "buyable_by_self": true,
-    "long_description": "If IKEA does not directly ship to your country, it'll come from America, in which case customs fees may apply.",
-    "max_qty": null,
-    "one_per_person_ever": false,
-    "sale_percentage": null,
-    "image_url": "https://flavortown.hackclub.com/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6MjM1LCJwdXIiOiJibG9iX2lkIn19--34b25d54db53c692f44b9f67a4c1f6ffd2eb391c/blahaj.png",
-    "enabled": {
-      "enabled_au": true,
-      "enabled_ca": true,
-      "enabled_eu": true,
-      "enabled_in": true,
-      "enabled_uk": true,
-      "enabled_us": false,
-      "enabled_xx": true
-    },
-    "ticket_cost": {
-      "base_cost": 133,
-      "au": 78.018,
-      "ca": 97.998,
-      "eu": 117.978,
-      "in": 72.986,
-      "uk": 78.018,
-      "us": 133,
-      "xx": 133
     }
   },
   {
@@ -4002,13 +4002,13 @@
     },
     "ticket_cost": {
       "base_cost": 800,
-      "au": 914.985,
-      "ca": 914.985,
-      "eu": 1149.9925,
+      "au": 915,
+      "ca": 915,
+      "eu": 1150,
       "in": 800,
-      "uk": 1075.015,
+      "uk": 1075,
       "us": 800,
-      "xx": 949.9875
+      "xx": 950
     }
   },
   {
@@ -4046,8 +4046,8 @@
       "ca": 811,
       "eu": 811,
       "in": 811,
-      "uk": 761.0125,
-      "us": 1061.0125,
+      "uk": 761,
+      "us": 1061,
       "xx": 811
     }
   },
@@ -4169,13 +4169,54 @@
     },
     "ticket_cost": {
       "base_cost": 3564,
-      "au": 4999.005,
-      "ca": 3824.0125,
-      "eu": 5698.99,
+      "au": 4999,
+      "ca": 3824,
+      "eu": 5699,
       "in": 3564,
-      "uk": 5673.9925,
+      "uk": 5674,
       "us": 3564,
       "xx": 3564
+    }
+  },
+  {
+    "id": 120,
+    "name": "256GB USB Drive",
+    "description": "great for storing even more cat pictures",
+    "old_prices": [],
+    "limited": false,
+    "stock": null,
+    "type": "ShopItem::Accessory",
+    "show_in_carousel": false,
+    "accessory_tag": "size",
+    "agh_contents": "",
+    "attached_shop_item_ids": [
+      null,
+      121
+    ],
+    "buyable_by_self": false,
+    "long_description": "",
+    "max_qty": null,
+    "one_per_person_ever": false,
+    "sale_percentage": null,
+    "image_url": "https://flavortown.hackclub.com/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6MjM3NTkyLCJwdXIiOiJibG9iX2lkIn19--bee601175db85cf34f9b6762a80c326d56a2b0a8/image-removebg-preview(8)(1).png",
+    "enabled": {
+      "enabled_au": true,
+      "enabled_ca": true,
+      "enabled_eu": true,
+      "enabled_in": true,
+      "enabled_uk": true,
+      "enabled_us": true,
+      "enabled_xx": true
+    },
+    "ticket_cost": {
+      "base_cost": 100,
+      "au": 100,
+      "ca": 100,
+      "eu": 200,
+      "in": 175,
+      "uk": 100,
+      "us": 100,
+      "xx": 225
     }
   },
   {
@@ -4262,46 +4303,6 @@
     }
   },
   {
-    "id": 116,
-    "name": "Blåhaj",
-    "description": "full-size! very huggable friend",
-    "old_prices": [],
-    "limited": false,
-    "stock": null,
-    "type": "ShopItem::ThirdPartyPhysical",
-    "show_in_carousel": false,
-    "accessory_tag": "",
-    "agh_contents": "",
-    "attached_shop_item_ids": [
-      null
-    ],
-    "buyable_by_self": true,
-    "long_description": "Shark good and soft to hold. Fantastic object! very Squish for hug the shark... with very Soft and Comfort human sleep soundly with blåhaj snuggle. Snuggle Blåhaj Always. no sad feels ever with blåhaj because good Shape and Support for human heart weak of big emotion feels. A blåhaj yes a friend for a human can trust blåhaj for giving good love to lonely person. share secrets with shark friend, never tell! most good listener in whole sea and land. Also makes girl better at software engineering. warm soft helpful companion! friend Shark.\r\n\r\n\r\n_If IKEA does not directly ship to your country, it’ll come from the UK, in which case customs fees may apply._",
-    "max_qty": null,
-    "one_per_person_ever": false,
-    "sale_percentage": null,
-    "image_url": "https://flavortown.hackclub.com/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6MjM0NDAwLCJwdXIiOiJibG9iX2lkIn19--a795d125167b125e1c3e7f962c55c6ccd9dc5203/shork.png",
-    "enabled": {
-      "enabled_au": true,
-      "enabled_ca": true,
-      "enabled_eu": true,
-      "enabled_in": true,
-      "enabled_uk": true,
-      "enabled_us": true,
-      "enabled_xx": true
-    },
-    "ticket_cost": {
-      "base_cost": 150,
-      "au": 150,
-      "ca": 150,
-      "eu": 150,
-      "in": 150,
-      "uk": 150,
-      "us": 150,
-      "xx": 150
-    }
-  },
-  {
     "id": 115,
     "name": "Chromebook",
     "description": "a simple laptop - great for cloud dev!",
@@ -4334,7 +4335,7 @@
       "base_cost": 1080,
       "au": 1710,
       "ca": 1780,
-      "eu": 1762.5,
+      "eu": 1763,
       "in": 1080,
       "uk": 1395,
       "us": 1080,
@@ -4422,6 +4423,47 @@
     }
   },
   {
+    "id": 119,
+    "name": "128GB USB Drive",
+    "description": "great for storing more cat pictures",
+    "old_prices": [],
+    "limited": false,
+    "stock": null,
+    "type": "ShopItem::Accessory",
+    "show_in_carousel": true,
+    "accessory_tag": "size",
+    "agh_contents": "",
+    "attached_shop_item_ids": [
+      null,
+      121
+    ],
+    "buyable_by_self": false,
+    "long_description": "",
+    "max_qty": null,
+    "one_per_person_ever": false,
+    "sale_percentage": null,
+    "image_url": "https://flavortown.hackclub.com/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6MjM3NTg1LCJwdXIiOiJibG9iX2lkIn19--3367e32094c579736eaf8465c6e28dbf8b99744d/image-removebg-preview(9)(1).png",
+    "enabled": {
+      "enabled_au": true,
+      "enabled_ca": true,
+      "enabled_eu": true,
+      "enabled_in": true,
+      "enabled_uk": true,
+      "enabled_us": true,
+      "enabled_xx": true
+    },
+    "ticket_cost": {
+      "base_cost": 60,
+      "au": 110,
+      "ca": 85,
+      "eu": 135,
+      "in": 60,
+      "uk": 60,
+      "us": 60,
+      "xx": 135
+    }
+  },
+  {
     "id": 123,
     "name": "Google Play Licence",
     "description": "publish your own mobile apps!",
@@ -4452,13 +4494,13 @@
     },
     "ticket_cost": {
       "base_cost": 88,
-      "au": 94.5,
-      "ca": 94.5,
-      "eu": 94.5,
-      "in": 169.25,
-      "uk": 94.5,
+      "au": 95,
+      "ca": 95,
+      "eu": 95,
+      "in": 169,
+      "uk": 95,
       "us": 88,
-      "xx": 94.5
+      "xx": 95
     }
   },
   {
@@ -4506,6 +4548,415 @@
       "uk": 180,
       "us": 180,
       "xx": 180
+    }
+  },
+  {
+    "id": 121,
+    "name": "USB Drive",
+    "description": "some high quality cat photos can be stored :3",
+    "old_prices": [],
+    "limited": false,
+    "stock": null,
+    "type": "ShopItem::ThirdPartyPhysical",
+    "show_in_carousel": false,
+    "accessory_tag": "",
+    "agh_contents": "",
+    "attached_shop_item_ids": [
+      null
+    ],
+    "buyable_by_self": true,
+    "long_description": "64GB by default!",
+    "max_qty": null,
+    "one_per_person_ever": false,
+    "sale_percentage": null,
+    "image_url": "https://flavortown.hackclub.com/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6MjM3NTk3LCJwdXIiOiJibG9iX2lkIn19--034d0019f2b2608e97bb4bc333ff5afaa03f518a/2025_06_17_10l_Kleki-removebg-preview(1).png",
+    "enabled": {
+      "enabled_au": true,
+      "enabled_ca": true,
+      "enabled_eu": true,
+      "enabled_in": true,
+      "enabled_uk": true,
+      "enabled_us": true,
+      "enabled_xx": true
+    },
+    "ticket_cost": {
+      "base_cost": 35,
+      "au": 85,
+      "ca": 60,
+      "eu": 60,
+      "in": 35,
+      "uk": 35,
+      "us": 35,
+      "xx": 85
+    }
+  },
+  {
+    "id": 127,
+    "name": "Picoducky",
+    "description": "a tiny programmable security key!",
+    "old_prices": [
+      125
+    ],
+    "limited": false,
+    "stock": null,
+    "type": "ShopItem::HackClubberItem",
+    "show_in_carousel": false,
+    "accessory_tag": "",
+    "agh_contents": "",
+    "attached_shop_item_ids": [
+      null
+    ],
+    "buyable_by_self": true,
+    "long_description": "Powered by an RP2350 chip, Picoducky is a tiny board that can be used as a security key, or programmed to run HID scripts.",
+    "max_qty": null,
+    "one_per_person_ever": false,
+    "sale_percentage": null,
+    "image_url": "https://flavortown.hackclub.com/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6MjM5NTA0LCJwdXIiOiJibG9iX2lkIn19--90710cc30d403c7d5d710259e6448ca3e654fb66/pi%202.png",
+    "enabled": {
+      "enabled_au": true,
+      "enabled_ca": true,
+      "enabled_eu": true,
+      "enabled_in": true,
+      "enabled_uk": true,
+      "enabled_us": true,
+      "enabled_xx": true
+    },
+    "ticket_cost": {
+      "base_cost": 70,
+      "au": 70,
+      "ca": 70,
+      "eu": 70,
+      "in": 70,
+      "uk": 70,
+      "us": 70,
+      "xx": 70
+    }
+  },
+  {
+    "id": 125,
+    "name": "Object from Amber's desk",
+    "description": "it could be anything! maybe even an amber :0",
+    "old_prices": [
+      44,
+      145
+    ],
+    "limited": false,
+    "stock": null,
+    "type": "ShopItem::HQMailItem",
+    "show_in_carousel": false,
+    "accessory_tag": "",
+    "agh_contents": "",
+    "attached_shop_item_ids": [
+      null
+    ],
+    "buyable_by_self": true,
+    "long_description": "",
+    "max_qty": null,
+    "one_per_person_ever": false,
+    "sale_percentage": null,
+    "image_url": "https://flavortown.hackclub.com/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6MjM4NjAyLCJwdXIiOiJibG9iX2lkIn19--3f57336f3d8cba06b4b406ab8315a2a652bd56f5/IMG_20260312_183801184.jpg",
+    "enabled": {
+      "enabled_au": true,
+      "enabled_ca": true,
+      "enabled_eu": true,
+      "enabled_in": true,
+      "enabled_uk": true,
+      "enabled_us": true,
+      "enabled_xx": true
+    },
+    "ticket_cost": {
+      "base_cost": 109,
+      "au": 109,
+      "ca": 109,
+      "eu": 109,
+      "in": 109,
+      "uk": 67,
+      "us": 109,
+      "xx": 109
+    }
+  },
+  {
+    "id": 126,
+    "name": "PICO-8 Licence",
+    "description": "get the worlds best fantasy console now!",
+    "old_prices": [],
+    "limited": false,
+    "stock": null,
+    "type": "ShopItem::ThirdPartyDigital",
+    "show_in_carousel": false,
+    "accessory_tag": "",
+    "agh_contents": "",
+    "attached_shop_item_ids": [
+      null
+    ],
+    "buyable_by_self": true,
+    "long_description": "",
+    "max_qty": null,
+    "one_per_person_ever": false,
+    "sale_percentage": null,
+    "image_url": "https://flavortown.hackclub.com/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6MjM4ODAyLCJwdXIiOiJibG9iX2lkIn19--f7a2983229c8e644d20ef399f98784f2e57caee0/2025_06_15_0sk_Kleki.png",
+    "enabled": {
+      "enabled_au": true,
+      "enabled_ca": true,
+      "enabled_eu": true,
+      "enabled_in": true,
+      "enabled_uk": true,
+      "enabled_us": true,
+      "enabled_xx": true
+    },
+    "ticket_cost": {
+      "base_cost": 56,
+      "au": 56,
+      "ca": 56,
+      "eu": 56,
+      "in": 56,
+      "uk": 56,
+      "us": 56,
+      "xx": 56
+    }
+  },
+  {
+    "id": 116,
+    "name": "Blåhaj",
+    "description": "full-size! very huggable friend",
+    "old_prices": [],
+    "limited": false,
+    "stock": null,
+    "type": "ShopItem::ThirdPartyPhysical",
+    "show_in_carousel": false,
+    "accessory_tag": "",
+    "agh_contents": "",
+    "attached_shop_item_ids": [
+      null
+    ],
+    "buyable_by_self": true,
+    "long_description": "Shark good and soft to hold. Fantastic object! very Squish for hug the shark... with very Soft and Comfort human sleep soundly with blåhaj snuggle. Snuggle Blåhaj Always. no sad feels ever with blåhaj because good Shape and Support for human heart weak of big emotion feels. A blåhaj yes a friend for a human can trust blåhaj for giving good love to lonely person. share secrets with shark friend, never tell! most good listener in whole sea and land. Also makes girl better at software engineering. warm soft helpful companion! friend Shark.\r\n\r\n\r\n_If IKEA does not directly ship to your country, it’ll come from the UK, in which case customs fees may apply._",
+    "max_qty": null,
+    "one_per_person_ever": false,
+    "sale_percentage": null,
+    "image_url": "https://flavortown.hackclub.com/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6MjM0NDAwLCJwdXIiOiJibG9iX2lkIn19--a795d125167b125e1c3e7f962c55c6ccd9dc5203/shork.png",
+    "enabled": {
+      "enabled_au": true,
+      "enabled_ca": true,
+      "enabled_eu": true,
+      "enabled_in": true,
+      "enabled_uk": true,
+      "enabled_us": true,
+      "enabled_xx": true
+    },
+    "ticket_cost": {
+      "base_cost": 150,
+      "au": 150,
+      "ca": 150,
+      "eu": 150,
+      "in": 150,
+      "uk": 150,
+      "us": 150,
+      "xx": 150
+    }
+  },
+  {
+    "id": 131,
+    "name": "Beige",
+    "description": "It's a colour. Beige. For UGEE tablet.",
+    "old_prices": [],
+    "limited": false,
+    "stock": null,
+    "type": "ShopItem::Accessory",
+    "show_in_carousel": false,
+    "accessory_tag": "colour",
+    "agh_contents": "",
+    "attached_shop_item_ids": [
+      null,
+      56
+    ],
+    "buyable_by_self": false,
+    "long_description": "",
+    "max_qty": null,
+    "one_per_person_ever": false,
+    "sale_percentage": null,
+    "image_url": "https://flavortown.hackclub.com/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6MjM5NTU5LCJwdXIiOiJibG9iX2lkIn19--2c7d11adc884af07b59241e53a2d82e4d0350a28/SCR-20260313-mqlr.png",
+    "enabled": {
+      "enabled_au": true,
+      "enabled_ca": true,
+      "enabled_eu": true,
+      "enabled_in": true,
+      "enabled_uk": true,
+      "enabled_us": true,
+      "enabled_xx": true
+    },
+    "ticket_cost": {
+      "base_cost": 0,
+      "au": 0,
+      "ca": 0,
+      "eu": 0,
+      "in": 0,
+      "uk": 0,
+      "us": 0,
+      "xx": 0
+    }
+  },
+  {
+    "id": 130,
+    "name": "Living Coral (Red/Orange)",
+    "description": "It's a colour. Orangey. For UGEE tablet.",
+    "old_prices": [],
+    "limited": false,
+    "stock": null,
+    "type": "ShopItem::Accessory",
+    "show_in_carousel": false,
+    "accessory_tag": "colour",
+    "agh_contents": "",
+    "attached_shop_item_ids": [
+      null,
+      56
+    ],
+    "buyable_by_self": false,
+    "long_description": "",
+    "max_qty": null,
+    "one_per_person_ever": false,
+    "sale_percentage": null,
+    "image_url": "https://flavortown.hackclub.com/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6MjM5NTU0LCJwdXIiOiJibG9iX2lkIn19--d006d367bf8731724febc7a4ebfa5dbff21e5ccd/SCR-20260313-mqhb.png",
+    "enabled": {
+      "enabled_au": true,
+      "enabled_ca": true,
+      "enabled_eu": true,
+      "enabled_in": true,
+      "enabled_uk": true,
+      "enabled_us": true,
+      "enabled_xx": true
+    },
+    "ticket_cost": {
+      "base_cost": 0,
+      "au": 0,
+      "ca": 0,
+      "eu": 0,
+      "in": 0,
+      "uk": 0,
+      "us": 0,
+      "xx": 0
+    }
+  },
+  {
+    "id": 132,
+    "name": "3D Printed Yay",
+    "description": "yay yay yay yay yay yay yay yay yay yay yay yay",
+    "old_prices": [],
+    "limited": true,
+    "stock": 6,
+    "type": "ShopItem::HQMailItem",
+    "show_in_carousel": false,
+    "accessory_tag": "",
+    "agh_contents": "",
+    "attached_shop_item_ids": [
+      null
+    ],
+    "buyable_by_self": true,
+    "long_description": "",
+    "max_qty": null,
+    "one_per_person_ever": true,
+    "sale_percentage": null,
+    "image_url": "https://flavortown.hackclub.com/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6MjM5NTczLCJwdXIiOiJibG9iX2lkIn19--4a16db0ba3a7fd73673fe4401649a644d196e37e/IMG_3933.jpg",
+    "enabled": {
+      "enabled_au": true,
+      "enabled_ca": true,
+      "enabled_eu": true,
+      "enabled_in": true,
+      "enabled_uk": true,
+      "enabled_us": true,
+      "enabled_xx": true
+    },
+    "ticket_cost": {
+      "base_cost": 90,
+      "au": 90,
+      "ca": 90,
+      "eu": 90,
+      "in": 90,
+      "uk": 90,
+      "us": 90,
+      "xx": 90
+    }
+  },
+  {
+    "id": 128,
+    "name": "Carbon Black",
+    "description": "It's a colour. Carbon Black. For UGEE drawing tablet",
+    "old_prices": [],
+    "limited": false,
+    "stock": null,
+    "type": "ShopItem::Accessory",
+    "show_in_carousel": false,
+    "accessory_tag": "colour",
+    "agh_contents": "",
+    "attached_shop_item_ids": [
+      null,
+      56
+    ],
+    "buyable_by_self": false,
+    "long_description": "",
+    "max_qty": null,
+    "one_per_person_ever": false,
+    "sale_percentage": null,
+    "image_url": "https://flavortown.hackclub.com/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6MjM5NTM3LCJwdXIiOiJibG9iX2lkIn19--f65131c22c3bfd4376ac12117c6deb842e9cfeea/SCR-20260313-momn.png",
+    "enabled": {
+      "enabled_au": true,
+      "enabled_ca": true,
+      "enabled_eu": true,
+      "enabled_in": true,
+      "enabled_uk": true,
+      "enabled_us": true,
+      "enabled_xx": true
+    },
+    "ticket_cost": {
+      "base_cost": 0,
+      "au": 0,
+      "ca": 0,
+      "eu": 0,
+      "in": 0,
+      "uk": 0,
+      "us": 0,
+      "xx": 0
+    }
+  },
+  {
+    "id": 129,
+    "name": "Violet",
+    "description": "It's a colour. Violet. For UGEE drawing tablet.",
+    "old_prices": [],
+    "limited": false,
+    "stock": null,
+    "type": "ShopItem::Accessory",
+    "show_in_carousel": false,
+    "accessory_tag": "colour",
+    "agh_contents": "",
+    "attached_shop_item_ids": [
+      null,
+      56
+    ],
+    "buyable_by_self": false,
+    "long_description": "",
+    "max_qty": null,
+    "one_per_person_ever": false,
+    "sale_percentage": null,
+    "image_url": "https://flavortown.hackclub.com/rails/active_storage/blobs/proxy/eyJfcmFpbHMiOnsiZGF0YSI6MjM5NTQ3LCJwdXIiOiJibG9iX2lkIn19--636b2e04538f937ce3ae32e945361c4dd27695bf/SCR-20260313-mpfk.png",
+    "enabled": {
+      "enabled_au": true,
+      "enabled_ca": true,
+      "enabled_eu": true,
+      "enabled_in": true,
+      "enabled_uk": true,
+      "enabled_us": true,
+      "enabled_xx": true
+    },
+    "ticket_cost": {
+      "base_cost": 0,
+      "au": 0,
+      "ca": 0,
+      "eu": 0,
+      "in": 0,
+      "uk": 0,
+      "us": 0,
+      "xx": 0
     }
   }
 ]

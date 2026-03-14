@@ -1,0 +1,8 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^cd \"/Users/nok/Desktop/Heidi the Waitress\" && node scripts/test-output\\.js$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}

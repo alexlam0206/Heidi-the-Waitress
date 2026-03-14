@@ -322,9 +322,13 @@ function detectChanges(currentItems) {
     
       if (!prevItem) {
       changes.push({
+        id: item.id,
         type: 'new',
         name: item.name,
         description: item.description,
+        type_field: item.type,
+        accessory_tag: item.accessory_tag,
+        attached_shop_item_ids: item.attached_shop_item_ids,
         long_description: item.long_description,
         prices: item.ticket_cost,
           sale: item.sale_percentage,
@@ -344,8 +348,12 @@ function detectChanges(currentItems) {
 
       if (priceChanged || stockChanged || descriptionChanged || longDescChanged || nameChanged || photoChanged || saleChanged) {
         changes.push({
+          id: item.id,
           type: 'update',
           name: item.name,
+          type_field: item.type,
+          accessory_tag: item.accessory_tag,
+          attached_shop_item_ids: item.attached_shop_item_ids,
           description: item.description,
           oldPrices: prevItem.ticket_cost,
           newPrices: item.ticket_cost,
@@ -498,6 +506,50 @@ function markdownToSlack(text) {
   return out;
 }
 
+function formatAccessoryGroups(accessories) {
+  if (!accessories || accessories.length === 0) return '_No accessories_';
+
+  // heuristic mapping for common accessory_tag -> user-friendly header
+  const tagMap = {
+    colour: 'Colour',
+    color: 'Colour',
+    colours: 'Colour',
+    storage: 'Storage',
+    size: 'Size',
+    ram: 'Memory'
+  };
+
+  const guessCategory = (a) => {
+    const tag = (a.accessory_tag || '').toString().trim().toLowerCase();
+    if (tag) return tagMap[tag] || tag.replace(/[-_]/g, ' ').replace(/^./, s => s.toUpperCase());
+    const name = (a.name || '').toString();
+    if (/\b(GB|TB|Storage|256|512|1TB|500GB)\b/i.test(name)) return 'Storage';
+    if (/\b(Space|Starlight|Blue|Purple|Grey|Silver|Black|White|Red|Green)\b/i.test(name)) return 'Colour';
+    if (/\b(13\"|13'|13 inch|13-inch|model)\b/i.test(name)) return 'Size';
+    return 'Other upgrades';
+  };
+
+  const groups = {};
+  for (const a of accessories) {
+    const cat = guessCategory(a);
+    if (!groups[cat]) groups[cat] = [];
+    groups[cat].push(a);
+  }
+
+  const lines = [];
+  for (const cat of Object.keys(groups)) {
+    lines.push(`${cat}`);
+    for (const a of groups[cat]) {
+      lines.push(`${a.name}`);
+      const base = a.ticket_cost && typeof a.ticket_cost.base_cost === 'number' && a.ticket_cost.base_cost > 0 ? a.ticket_cost.base_cost : null;
+      if (base != null) lines.push(`:ft-cookie: ${base}`);
+    }
+    lines.push('');
+  }
+
+  return lines.join('\n');
+}
+
 async function fetchShopItems() {
   try {
     const storeEndpoint = `${FLAVORTOWN_API_URL.replace(/\/$/, '')}/api/v1/store?t=${Date.now()}`;
@@ -523,7 +575,110 @@ async function fetchShopItems() {
     const changes = detectChanges(data);
 
     if (SLACK_CHANNEL_ID && changes.length > 0) {
-      for (const change of changes) {
+      // Group accessory changes by the main item they attach to
+      const accessoryChanges = changes.filter(c => c.type_field && String(c.type_field).includes('Accessory'));
+      const accessoryChangesByMain = new Map();
+      for (const acc of accessoryChanges) {
+        const attached = Array.isArray(acc.attached_shop_item_ids) ? acc.attached_shop_item_ids.filter(Boolean) : [];
+        for (const mainId of attached) {
+          if (!accessoryChangesByMain.has(mainId)) accessoryChangesByMain.set(mainId, []);
+          accessoryChangesByMain.get(mainId).push(acc);
+        }
+      }
+
+      // Post accessory-change messages grouped by main item id
+      for (const [mainId, accList] of accessoryChangesByMain.entries()) {
+        const mainItem = data.find(i => i.id === mainId);
+        if (!mainItem) continue;
+
+        // find all current accessories attached to this main item
+        const allCurrentAccessories = data.filter(i => Array.isArray(i.attached_shop_item_ids) && i.attached_shop_item_ids.filter(Boolean).includes(mainId) && String(i.type || '').toLowerCase().includes('accessory'));
+
+        // find previous accessories attached to this main item (if cache exists)
+        const prevMain = previousItems ? previousItems.find(i => i.id === mainId) : null;
+        const prevAccessories = previousItems ? previousItems.filter(i => Array.isArray(i.attached_shop_item_ids) && i.attached_shop_item_ids.filter(Boolean).includes(mainId) && String(i.type || '').toLowerCase().includes('accessory')) : [];
+
+        const accIds = accList.map(a => a.id).filter(Boolean);
+
+        const formatAccLine = (a) => {
+          const base = a.ticket_cost && typeof a.ticket_cost.base_cost === 'number' && a.ticket_cost.base_cost > 0 ? a.ticket_cost.base_cost : null;
+          return base ? `${a.name}: ${base} :ft-cookie:` : `${a.name}`;
+        };
+
+        // show Before/Now for the accessories that actually changed (fall back to all attached accessories)
+        const changedPrevAccessories = previousItems ? previousItems.filter(i => accIds.includes(i.id)) : [];
+        const changedNowAccessories = data.filter(i => accIds.includes(i.id));
+        const beforeLines = (changedPrevAccessories.length ? changedPrevAccessories : prevAccessories).map(formatAccLine).join('\n') || '_No accessories_';
+        const nowLines = (changedNowAccessories.length ? changedNowAccessories : allCurrentAccessories).map(formatAccLine).join('\n') || '_No accessories_';
+
+        // Determine Base price: prefer main item's base_cost when available (>0), otherwise use minimum of changed (or attached) accessories
+        const mainBase = mainItem.ticket_cost && typeof mainItem.ticket_cost.base_cost === 'number' && mainItem.ticket_cost.base_cost > 0 ? mainItem.ticket_cost.base_cost : null;
+        let minBase = null;
+        if (mainBase != null) {
+          minBase = mainBase;
+        } else {
+          const accBasesFromChanged = changedNowAccessories.length ? changedNowAccessories.map(a => (a.ticket_cost && typeof a.ticket_cost.base_cost === 'number' && a.ticket_cost.base_cost > 0) ? a.ticket_cost.base_cost : Infinity).filter(Number.isFinite) : [];
+          const accBases = accBasesFromChanged.length ? accBasesFromChanged : allCurrentAccessories.map(a => (a.ticket_cost && typeof a.ticket_cost.base_cost === 'number' && a.ticket_cost.base_cost > 0) ? a.ticket_cost.base_cost : Infinity).filter(Number.isFinite);
+          if (accBases.length) minBase = Math.min(...accBases);
+        }
+
+        // detect newly added accessories among the reported accessory changes
+        const newAccs = accList.filter(a => a.type === 'new');
+        const hasNewAccessories = newAccs.length > 0;
+
+        const headerText = hasNewAccessories ? `<!channel> *Heidi found something new for ${mainItem.name}!* :ultrafastparrot: :flavortown: :yay:` : `<!channel> *Accessory changes for ${mainItem.name}*`;
+
+        // If new accessories, omit the Before section and show all current accessories (with prices) under Now
+        let blocks;
+        if (hasNewAccessories) {
+          const nowAll = formatAccessoryGroups(allCurrentAccessories);
+          blocks = [
+            { type: 'section', text: { type: 'mrkdwn', text: headerText } },
+            { type: 'section', text: { type: 'mrkdwn', text: `*Now:*\n${nowAll}` } }
+          ];
+        } else {
+          const beforeGrouped = formatAccessoryGroups((changedPrevAccessories.length ? changedPrevAccessories : prevAccessories));
+          const nowGrouped = formatAccessoryGroups((changedNowAccessories.length ? changedNowAccessories : allCurrentAccessories));
+          blocks = [
+            { type: 'section', text: { type: 'mrkdwn', text: headerText } },
+            { type: 'section', text: { type: 'mrkdwn', text: `*Before:*\n${beforeGrouped}` } },
+            { type: 'section', text: { type: 'mrkdwn', text: `*Now:*\n${nowGrouped}` } }
+          ];
+        }
+
+        if (minBase != null) {
+          blocks.push({
+            type: 'section',
+            text: { type: 'mrkdwn', text: `*Base price:* ${minBase} :ft-cookie:` }
+          });
+        }
+
+        // include main item image (no accessory images)
+        if (mainItem.image_url) {
+          blocks.push({
+            type: 'image',
+            image_url: mainItem.image_url,
+            alt_text: mainItem.name
+          });
+        }
+
+        blocks.push({
+          type: 'section',
+          text: { type: 'mrkdwn', text: `*<${SHOP_PAGE_URL.replace(/\/$/, '')}/order?shop_item_id=${mainItem.id}|Buy now!>*` }
+        });
+
+        await app.client.chat.postMessage({
+          channel: SLACK_CHANNEL_ID,
+          text: `Accessory changes for ${mainItem.name}`,
+          blocks,
+          link_names: true,
+          unfurl_links: false,
+          unfurl_media: false
+        });
+      }
+
+      // Process non-accessory changes normally (but include accessory info only if accessories themselves changed)
+      for (const change of changes.filter(c => !(c.type_field && String(c.type_field).includes('Accessory')))) {
         let messageText = '';
         let blocks = [];
  
@@ -680,6 +835,38 @@ async function fetchShopItems() {
             image_url: change.photo,
             alt_text: change.name
           });
+        }
+
+        // Show accessory info only if any accessory attached to this main item has a reported change
+        try {
+          const accChangesForThisMain = accessoryChangesByMain.get(change.id) || [];
+          if (accChangesForThisMain.length) {
+            const accText = accChangesForThisMain.map(a => {
+              const base = a.ticket_cost && typeof a.ticket_cost.base_cost === 'number' ? a.ticket_cost.base_cost : null;
+              return base && base > 0 ? `${a.name}: ${base} :ft-cookie:` : `${a.name}`;
+            }).join('\n');
+            blocks.splice(blocks.length - 1, 0, {
+              type: 'section',
+              text: {
+                type: 'mrkdwn',
+                text: `*Accessory changes:*
+${accText}`
+              }
+            });
+            // compute and show min base price among main and changed accessories
+            const mainBase = change.newPrices && typeof change.newPrices.base_cost === 'number' && change.newPrices.base_cost > 0 ? change.newPrices.base_cost : (change.prices && typeof change.prices.base_cost === 'number' && change.prices.base_cost > 0 ? change.prices.base_cost : Infinity);
+            const accBases = accChangesForThisMain.map(a => (a.ticket_cost && typeof a.ticket_cost.base_cost === 'number' && a.ticket_cost.base_cost > 0) ? a.ticket_cost.base_cost : Infinity).filter(Number.isFinite);
+            const allBases = [mainBase, ...accBases].filter(Number.isFinite);
+            if (allBases.length) {
+              const minBase = Math.min(...allBases);
+              blocks.splice(blocks.length - 1, 0, {
+                type: 'section',
+                text: { type: 'mrkdwn', text: `*Min base price:* ${minBase} :ft-cookie:` }
+              });
+            }
+          }
+        } catch (e) {
+          // ignore accessory rendering errors
         }
 
         blocks.push({
