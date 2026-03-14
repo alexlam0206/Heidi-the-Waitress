@@ -159,32 +159,41 @@ async function testOutput() {
 
           function formatAccessoryGroups(accessories) {
             if (!accessories || accessories.length === 0) return '_No accessories_';
-            const tagMap = { colour: 'Colour', color: 'Colour', colours: 'Colour', storage: 'Storage', size: 'Size', ram: 'Memory' };
+
             const guessCategory = (a) => {
-              const tag = (a.accessory_tag || '').toString().trim().toLowerCase();
-              if (tag) return tagMap[tag] || tag.replace(/[-_]/g, ' ').replace(/^./, s => s.toUpperCase());
+              const tagRaw = (a.accessory_tag || '').toString().trim();
+              if (tagRaw) return tagRaw.replace(/[-_]/g, ' ').replace(/^./, s => s.toUpperCase());
               const name = (a.name || '').toString();
               if (/\b(GB|TB|Storage|256|512|1TB|500GB)\b/i.test(name)) return 'Storage';
-              if (/\b(Space|Starlight|Blue|Purple|Grey|Silver|Black|White|Red|Green)\b/i.test(name)) return 'Colour';
+              if (/\b(Space|Starlight|Blue|Purple|Violet|Pink|Gold|Orange|Yellow|Rose|Indigo|Magenta|Grey|Silver|Black|White|Red|Green|Teal|Bronze|Charcoal|Brown)\b/i.test(name)) return 'Colour';
               if (/\b(13\"|13'|13 inch|13-inch|model)\b/i.test(name)) return 'Size';
               return 'Other upgrades';
             };
+
             const groups = {};
             for (const a of accessories) {
               const cat = guessCategory(a);
               if (!groups[cat]) groups[cat] = [];
               groups[cat].push(a);
             }
+
             const lines = [];
             for (const cat of Object.keys(groups)) {
-              lines.push(`${cat}`);
-              for (const a of groups[cat]) {
-                lines.push(`${a.name}`);
-                const base = a.ticket_cost && typeof a.ticket_cost.base_cost === 'number' && a.ticket_cost.base_cost > 0 ? a.ticket_cost.base_cost : null;
-                if (base != null) lines.push(`:ft-cookie: ${base}`);
+              lines.push(`*${cat}*`);
+              const items = groups[cat];
+              if (/colour|color/i.test(cat)) {
+                const names = items.map(i => i.name).join(', ');
+                lines.push(names);
+              } else {
+                for (const a of items) {
+                  const base = a.ticket_cost && typeof a.ticket_cost.base_cost === 'number' && a.ticket_cost.base_cost > 0 ? a.ticket_cost.base_cost : null;
+                  if (base != null) lines.push(`${a.name}  :ft-cookie: ${base}`);
+                  else lines.push(`${a.name}`);
+                }
               }
               lines.push('');
             }
+
             return lines.join('\n');
           }
 
